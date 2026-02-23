@@ -1,0 +1,3 @@
+﻿framerate = 60
+width = 180
+height = 30

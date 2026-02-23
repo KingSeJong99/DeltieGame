@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{cda2cbbc-356d-4d72-9e5e-f2c3bf7813f4}</ProjectGuid>
+    <RootNamespace>MintEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: [Step 1] 엔진 라이브러리를 보관할 공용 우체통(Library) 폴더가 없으면 생성합니다.
+if not exist "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\"
+:: [Step 2] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 DLL 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i
+:: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>:: 솔루션 루트의 Config 폴더를 내 실행 파일 폴더($(OutDir)) 안의 Config 폴더로 복사</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: [Step 1] 엔진 라이브러리를 보관할 공용 우체통(Library) 폴더가 없으면 생성합니다.
+if not exist "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\"
+:: [Step 2] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 DLL 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i
+:: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>:: 솔루션 루트의 Config 폴더를 내 실행 파일 폴더($(OutDir)) 안의 Config 폴더로 복사</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: [Step 1] 엔진 라이브러리를 보관할 공용 우체통(Library) 폴더가 없으면 생성합니다.
+if not exist "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\"
+:: [Step 2] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 DLL 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i
+:: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>:: 솔루션 루트의 Config 폴더를 내 실행 파일 폴더($(OutDir)) 안의 Config 폴더로 복사</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: [Step 1] 엔진 라이브러리를 보관할 공용 우체통(Library) 폴더가 없으면 생성합니다.
+if not exist "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\"
+:: [Step 2] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 DLL 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i
+:: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
+xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>:: 솔루션 루트의 Config 폴더를 내 실행 파일 폴더($(OutDir)) 안의 Config 폴더로 복사</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Actor\Actor.h" />
+    <ClInclude Include="Core\Color.h" />
+    <ClInclude Include="Core\Common.h" />
+    <ClInclude Include="Core\RTTI.h" />
+    <ClInclude Include="Core\Input.h" />
+    <ClInclude Include="Core\Util.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Level\Level.h" />
+    <ClInclude Include="Math\Vector2.h" />
+    <ClInclude Include="Render\Renderer.h" />
+    <ClInclude Include="Render\ScreenBuffer.h" />
+    <ClInclude Include="Core\CpuTimer.h" />
+    <ClInclude Include="Util\Util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Actor\Actor.cpp" />
+    <ClCompile Include="Core\Color.cpp" />
+    <ClCompile Include="Core\Input.cpp" />
+    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Level\Level.cpp" />
+    <ClCompile Include="Math\Vector2.cpp" />
+    <ClCompile Include="Render\Renderer.cpp" />
+    <ClCompile Include="Render\ScreenBuffer.cpp" />
+    <ClCompile Include="Core\CpuTimer.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
