@@ -19,9 +19,15 @@ class MINT_API Actor : public RTTI {
   RTTI_DECLARATIONS(Actor, RTTI)
 
  public:
-  Actor(const std::string& image = " ", 
-        const Vector2& position = Vector2::kZero,
-        Color color = Color::kWhite);
+  /**
+   * @brief Actor 생성자
+   * @param image 화면에 표시될 유니코드 문자열
+   * @param position 초기 좌표
+   * @param color 초기 색상
+   */
+  explicit Actor(const std::wstring& image = L" ", 
+                 const Vector2& position = Vector2::kZero,
+                 Color color = Color::kWhite);
   virtual ~Actor();
 
   // 게임 플레이 이벤트
@@ -48,7 +54,7 @@ class MINT_API Actor : public RTTI {
   bool is_active_ = true;
   bool destroy_requested_ = false;
 
-  std::string image_;
+  std::wstring image_;     ///< 화면에 표시될 유니코드 문자열
   Color color_ = Color::kWhite;
   Level* owner_ = nullptr;
   int sorting_order_ = 0;

@@ -7,7 +7,7 @@
 
 namespace mint {
 
-Actor::Actor(const std::string& image, const Vector2& position, Color color)
+Actor::Actor(const std::wstring& image, const Vector2& position, Color color)
     : image_(image), color_(color), position_(position) {}
 
 Actor::~Actor() {}
@@ -29,7 +29,8 @@ void Actor::Draw(CHAR_INFO* back_buffer, int width, int height) {
   int index = y * width + x;
 
   if (!image_.empty()) {
-    back_buffer[index].Char.UnicodeChar = static_cast<wchar_t>(image_[0]);
+    // 유니코드 문자열의 첫 번째 문자를 출력
+    back_buffer[index].Char.UnicodeChar = image_[0];
   }
   back_buffer[index].Attributes = static_cast<WORD>(color_);
 }
