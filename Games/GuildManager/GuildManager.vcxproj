@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -116,7 +116,7 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -138,7 +138,7 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -162,7 +162,7 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -180,10 +180,12 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor\Hero.cpp" />
+    <ClCompile Include="Level\GuildLevel.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor\Hero.h" />
+    <ClInclude Include="Level\GuildLevel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
