@@ -68,7 +68,7 @@ void ScreenBuffer::Clear() {
       zero_coord, &written_count);
 }
 
-void ScreenBuffer::Draw(CHAR_INFO* char_info) {
+void ScreenBuffer::Draw(const CHAR_INFO* char_info) {
   // 설정할 버퍼의 크기
   SMALL_RECT write_region = {};
   write_region.Left = 0;

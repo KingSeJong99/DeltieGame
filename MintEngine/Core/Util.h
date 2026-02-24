@@ -13,19 +13,27 @@ namespace mint {
  */
 namespace util {
 
-// 콘솔 커서 위치를 설정하는 함수
+/**
+ * @brief 콘솔 커서의 위치를 설정
+ * @param position 이동할 좌표 (Vector2)
+ */
 inline void SetConsolePosition(const Vector2& position) {
   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),
                            static_cast<COORD>(position));
 }
 
-// 콘솔 텍스트 색상을 설정하는 함수
+/**
+ * @brief 콘솔 출력 텍스트의 색상을 설정
+ * @param color 적용할 색상 (Color 열거형)
+ */
 inline void SetConsoleTextColor(Color color) {
   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
                           static_cast<unsigned short>(color));
 }
 
-// 콘솔 커서를 보이지 않게 설정
+/**
+ * @brief 콘솔 커서를 보이지 않게 설정
+ */
 inline void TurnOffCursor() {
   CONSOLE_CURSOR_INFO info = {};
   GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
@@ -33,7 +41,9 @@ inline void TurnOffCursor() {
   SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
 }
 
-// 콘솔 커서를 보이게 설정
+/**
+ * @brief 콘솔 커서를 화면에 표시되도록 설정
+ */
 inline void TurnOnCursor() {
   CONSOLE_CURSOR_INFO info = {};
   GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
@@ -43,7 +53,11 @@ inline void TurnOnCursor() {
 
 }  // namespace util
 
-// 메모리 해제 헬퍼 (단일 객체)
+/**
+ * @brief 할당된 동적 메모리를 해제하고 포인터를 초기화 (단일 객체용)
+ * @tparam T 해제할 객체의 타입
+ * @param t 해제할 객체의 포인터 참조
+ */
 template <typename T>
 void SafeDelete(T*& t) {
   if (t) {
@@ -52,7 +66,11 @@ void SafeDelete(T*& t) {
   }
 }
 
-// 메모리 해제 헬퍼 (배열)
+/**
+ * @brief 할당된 동적 메모리 배열을 해제하고 포인터를 초기화 (배열용)
+ * @tparam T 해제할 배열 요소의 타입
+ * @param t 해제할 배열의 포인터 참조
+ */
 template <typename T>
 void SafeDeleteArray(T*& t) {
   if (t) {

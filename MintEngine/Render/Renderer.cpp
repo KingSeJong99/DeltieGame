@@ -188,7 +188,7 @@ void Renderer::Present() {
   auto* target_buffer = GetCurrentBuffer();
   if (!target_buffer) return;
 
-  HANDLE h_out = target_buffer->GetBuffer();
+  HANDLE h_out = target_buffer->buffer();
 
   COORD buffer_size = {static_cast<short>(screen_size_.x),
                        static_cast<short>(screen_size_.y)};

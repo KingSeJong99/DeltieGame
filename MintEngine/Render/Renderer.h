@@ -23,7 +23,7 @@ class MINT_API Renderer {
    * @param screen_size 화면의 가로, 세로 크기
    */
   explicit Renderer(const Vector2& screen_size);
-  
+
   /**
    * @brief 렌더러 소멸자
    */
@@ -34,7 +34,7 @@ class MINT_API Renderer {
    */
   void Draw();
 
-  /** 
+  /**
    * @brief 렌더 큐에 쌓인 명령들을 프레임 버퍼에 기록하는 함수
    */
   void Render();
@@ -60,7 +60,7 @@ class MINT_API Renderer {
   void Submit(std::wstring text, const Vector2& position,
               Color color = Color::kWhite, int sorting_order = 0);
 
-  /** 
+  /**
    * @brief 문자열의 시각적 너비를 계산하는 정적 헬퍼 함수
    * @param text 너비를 계산할 문자열
    * @return 계산된 시각적 너비 (전각 문자는 2, 반각 문자는 1로 계산)
@@ -114,32 +114,32 @@ class MINT_API Renderer {
   struct Frame {
     explicit Frame(int total_pixels);
     ~Frame();
-    
+
     /**
      * @brief 프레임 버퍼 데이터를 초기화
      * @param screen_size 화면 크기
      */
     void Clear(const Vector2& screen_size);
-    
+
     CHAR_INFO* char_info_array_ = nullptr;  ///< 색상 및 문자 정보를 담는 배열
     int* sorting_order_array_ = nullptr;    ///< 각 픽셀의 우선순위를 담는 배열
   };
 
   /**
-   * @brief 렌더링 명령 구조체 
+   * @brief 렌더링 명령 구조체
    */
   struct RenderCommand {
-    std::wstring text;        ///< 출력할 텍스트
-    Vector2 position;         ///< 출력 위치
-    Color color;              ///< 텍스트 색상
-    int sorting_order = 0;    ///< 그리기 우선순위
+    std::wstring text;      ///< 출력할 텍스트
+    Vector2 position;       ///< 출력 위치
+    Color color;            ///< 텍스트 색상
+    int sorting_order = 0;  ///< 그리기 우선순위
   };
 
-  Vector2 screen_size_;                  ///< 화면 크기
-  Frame* frame_ = nullptr;               ///< 현재 프레임 데이터 포인터
-  ScreenBuffer* screen_buffers_[2];      ///< 이중 버퍼링용 스크린 버퍼 배열
-  int current_buffer_index_ = 0;         ///< 현재 활성화된 버퍼 인덱스
-  std::vector<RenderCommand> render_queue_; ///< 렌더링 명령 큐
+  Vector2 screen_size_;                      ///< 화면 크기
+  Frame* frame_ = nullptr;                   ///< 현재 프레임 데이터 포인터
+  ScreenBuffer* screen_buffers_[2];          ///< 이중 버퍼링용 스크린 버퍼 배열
+  int current_buffer_index_ = 0;             ///< 현재 활성화된 버퍼 인덱스
+  std::vector<RenderCommand> render_queue_;  ///< 렌더링 명령 큐
 
   /**
    * @brief 단일 렌더 커맨드를 프레임 버퍼에 그리는 헬퍼 함수
