@@ -180,11 +180,13 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor\Hero.cpp" />
+    <ClCompile Include="Level\BattleLevel.cpp" />
     <ClCompile Include="Level\GuildLevel.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor\Hero.h" />
+    <ClInclude Include="Level\BattleLevel.h" />
     <ClInclude Include="Level\GuildLevel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,9 +1,9 @@
 #ifndef GUILD_MANAGER_ACTOR_HERO_H_
 #define GUILD_MANAGER_ACTOR_HERO_H_
 
-#include <string>
-
 #include "MintEngine/Actor/Actor.h"
+
+#include <string>
 
 namespace guild {
 
