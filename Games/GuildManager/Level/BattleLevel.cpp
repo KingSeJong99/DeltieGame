@@ -3,12 +3,18 @@
 #include "Actor/Hero.h"
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Render/Renderer.h"
+#include "UI/TextLayout.h"
 
 namespace guild {
 
 BattleLevel::BattleLevel(const std::vector<Hero*>& party) : party_(party) {}
 
-BattleLevel::~BattleLevel() = default;
+BattleLevel::~BattleLevel() {
+  if (ui_layout_) {
+    delete ui_layout_;
+    ui_layout_ = nullptr;
+  }
+}
 
 void BattleLevel::BeginPlay() {
   
@@ -29,6 +35,10 @@ void BattleLevel::Tick(float delta_time) {
 }
 
 void BattleLevel::Draw(mint::Renderer& renderer, int width, int height) {
+  if (!ui_layout_) {
+    ui_layout_ = new mint::ui::TextLayout(renderer);
+  }
+
   DrawBattleUI(renderer);
   // Todo: 용사를 그리는 함수
   // 
@@ -37,29 +47,24 @@ void BattleLevel::Draw(mint::Renderer& renderer, int width, int height) {
 }
 
 void BattleLevel::DrawBattleUI(mint::Renderer& renderer) {
-  // Todo: 박스 그리기가 반복될 확률이 높으므로 MintEngine 프로젝트에서 UI를 다루는 녀석을 만들거나
-  // GuildManager 프로젝트에서 만들거나 UI 전용 프로젝트를 만들어 관리하는 것도 보임. 우선은 구현이 목적이므로 구현에 우선함
-  // 
-  // UI 박스 그리기
-  // 상단
-  renderer.SetCell(10, 5, L'┏', mint::Color::kCyan, mint::Color::kBlack);
-  for (int i = 11; i < 30; ++i)
-    renderer.SetCell(i, 5, L'━', mint::Color::kCyan, mint::Color::kBlack);
-  renderer.SetCell(30, 5, L'┓', mint::Color::kCyan, mint::Color::kBlack);
+  // 상단 현황판
+  ui_layout_->DrawBox(5, 2, 70, 5, L"전투 필드", mint::Color::kRed);
+  ui_layout_->DrawTextAligned(7, 4, 66, L"적을 소탕하십시오!", mint::ui::Alignment::Center, mint::Color::kYellow);
 
-  // 측면
-  for (int i = 6; i < 15; ++i) {
-    renderer.SetCell(10, i, L'┃', mint::Color::kCyan, mint::Color::kBlack);
-    renderer.SetCell(30, i, L'┃', mint::Color::kCyan, mint::Color::kBlack);
+  // 우리 파티 상태 정보
+  ui_layout_->DrawBox(5, 18, 25, 6, L"내 파티 정보", mint::Color::kCyan);
+  
+  for (int i = 0; i < party_.size(); ++i) {
+    if (party_[i] == nullptr) continue;
+
+    // 이름 표시
+    renderer.Submit(party_[i]->name(), mint::Vector2(7, 19 + i), mint::Color::kWhite);
+    
+    // HP바 표시
+    float hp_percent = static_cast<float>(party_[i]->hp()) / party_[i]->max_hp();
+    ui_layout_->DrawProgressBar(14, 19 + i, 14, 1, hp_percent, L'■', mint::Color::kGreen, mint::Color::kGray);
   }
-
-  // 하단
-  renderer.SetCell(10, 15, L'┗', mint::Color::kCyan, mint::Color::kBlack);
-  for (int i = 11; i < 30; ++i)
-    renderer.SetCell(i, 15, L'━', mint::Color::kCyan, mint::Color::kBlack);
-  renderer.SetCell(30, 15, L'┛', mint::Color::kCyan, mint::Color::kBlack);
-
-  renderer.Submit(L"전투 시작~ 모두들 힘내.", mint::Vector2(12, 10),
-                  mint::Color::kBrightRed);
 }
+}  // namespace guild
+
 }  // namespace guild

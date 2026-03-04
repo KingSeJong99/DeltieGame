@@ -5,6 +5,12 @@
 
 #include <vector>
 
+namespace mint {
+namespace ui {
+class TextLayout;
+}
+}
+
 namespace guild {
 
 	class Hero;
@@ -51,6 +57,8 @@ class BattleLevel : public mint::Level {
    // Todo: 화면 크기에 맞게 동적으로 변할 수 있도록 변경해야함
    int width_ = 100;  ///< UI가 그려질 가로폭
    int height_ = 100;  ///< UI가 그려질 세로폭
+   
+   mint::ui::TextLayout* ui_layout_ = nullptr; ///< UI 레이아웃 매니저
 };
 
 }  // namespace guild

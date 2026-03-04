@@ -5,6 +5,12 @@
 
 #include "MintEngine/Level/Level.h"
 
+namespace mint {
+namespace ui {
+class TextLayout;
+}
+}
+
 namespace guild {
 class Hero;
 
@@ -49,6 +55,8 @@ class GuildLevel : public mint::Level {
   std::vector<Hero*> party_;			 ///< 현재 선발된 파티원 목록
   const int kMaxPartySize = 3;			 ///< 현재 선발된 파티원 목록
   int selected_index_ = 0;				 ///< 현재 선택 중인 용사 인덱스
+  
+  mint::ui::TextLayout* ui_layout_ = nullptr; ///< UI 레이아웃 매니저
 };
 
 }  // namespace guild

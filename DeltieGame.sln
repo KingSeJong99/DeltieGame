@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MintEngine", "MintEngine\Mi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GuildManager", "Games\GuildManager\GuildManager.vcxproj", "{D1AF1BA8-F6D8-4110-85EF-68851FE5610F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MintUI", "MintUI\MintUI.vcxproj", "{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{D1AF1BA8-F6D8-4110-85EF-68851FE5610F}.Release|x64.Build.0 = Release|x64
 		{D1AF1BA8-F6D8-4110-85EF-68851FE5610F}.Release|x86.ActiveCfg = Release|Win32
 		{D1AF1BA8-F6D8-4110-85EF-68851FE5610F}.Release|x86.Build.0 = Release|Win32
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Debug|x64.ActiveCfg = Debug|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Debug|x64.Build.0 = Debug|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Debug|x86.ActiveCfg = Debug|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Debug|x86.Build.0 = Debug|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Release|x64.ActiveCfg = Release|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Release|x64.Build.0 = Release|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Release|x86.ActiveCfg = Release|x64
+		{4B10A7C1-D84F-4B5D-8A7E-A0B8A1C5A9F0}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

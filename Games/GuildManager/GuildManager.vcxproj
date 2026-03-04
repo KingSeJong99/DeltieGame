@@ -138,19 +138,19 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir); $(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)MintUI;$(SolutionDir)MintEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>MintEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MintEngine.lib;MintUI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>:: 엔진 우체통에서 최신 DLL을 내 실행 파일 폴더($(OutDir))로 가져옵니다.
-xcopy "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\*.dll" "$(OutDir)" /d /y
-:: 공용 Config 폴더의 내용물을 내 실행 폴더 아래 Config 폴더로 복사
+      <Command>:: 엔진 및 UI 라이브러리 DLL을 실행 폴더로 복사
+xcopy "$(SolutionDir)Bin\$(Platform)\$(Configuration)\*.dll" "$(OutDir)" /d /y
+:: 공용 Config 폴더 복사
 if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" /d /e /y /i</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
