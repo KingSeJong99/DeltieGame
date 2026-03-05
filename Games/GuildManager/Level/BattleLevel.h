@@ -1,19 +1,20 @@
 #ifndef GUILD_MANAGER_LEVEL_BATTLE_LEVEL_H_
 #define GUILD_MANAGER_LEVEL_BATTLE_LEVEL_H_
 
-#include "MintEngine/Level/Level.h"
-
 #include <vector>
+
+#include "MintEngine/Level/Level.h"
 
 namespace mint {
 namespace ui {
 class TextLayout;
 }
-}
+}  // namespace mint
 
 namespace guild {
 
-	class Hero;
+class Hero;
+class Enemy;
 
 /**
  * @brief 서로의 파티가 전투를 벌이는 전장 레벨
@@ -44,21 +45,23 @@ class BattleLevel : public mint::Level {
    */
   void Draw(mint::Renderer& renderer, int width, int height) override;
 
-  private:
+ private:
   /**
    * @brief 전투용 UI 그리기
    * @note 킬스코어, 데미지, 체력바 등
    */
-   void DrawBattleUI(mint::Renderer& renderer);
+  void DrawBattleUI(mint::Renderer& renderer);
 
-   std::vector<Hero*> party_;  ///< 선발된 용사 파티원들
-   // Todo: 플레이어의 파티가 상태해야 할 적의 리스트와 상태 변수 추가
+  std::vector<Hero*> party_;     ///< 선발된 용사 파티원들
+  std::vector<Enemy*> enemies_;  ///< 상대해야 할 적의 리스트
 
-   // Todo: 화면 크기에 맞게 동적으로 변할 수 있도록 변경해야함
-   int width_ = 100;  ///< UI가 그려질 가로폭
-   int height_ = 100;  ///< UI가 그려질 세로폭
-   
-   mint::ui::TextLayout* ui_layout_ = nullptr; ///< UI 레이아웃 매니저
+  // Todo: 화면 크기에 맞게 동적으로 변할 수 있도록 변경해야함
+  int width_ = 100;   ///< UI가 그려질 가로폭
+  int height_ = 100;  ///< UI가 그려질 세로폭
+
+  mint::ui::TextLayout* ui_layout_ = nullptr;  ///< UI 레이아웃 매니저
+
+  float battle_timer_ = 0.0f;  ///< 전투 턴 처리를 위한 타이머
 };
 
 }  // namespace guild

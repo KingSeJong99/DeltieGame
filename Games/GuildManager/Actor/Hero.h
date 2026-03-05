@@ -1,9 +1,9 @@
 #ifndef GUILD_MANAGER_ACTOR_HERO_H_
 #define GUILD_MANAGER_ACTOR_HERO_H_
 
-#include "MintEngine/Actor/Actor.h"
-
 #include <string>
+
+#include "MintEngine/Actor/Actor.h"
 
 namespace guild {
 
@@ -18,10 +18,10 @@ class Hero : public mint::Actor {
    * @brief 용사가 가진 전투 정보를 저장하는 구조체
    */
   struct ArenaInfo {
-    int attack_point;  ///< 해당 라운드에 입힌 총 피해량
-    int kill_count;    ///< 처치한 적의 수
-    int death_count;   ///< 사망 횟수
-    bool is_dead = false;   ///< 사망 판정
+    int attack_point;      ///< 해당 라운드에 입힌 총 피해량
+    int kill_count;        ///< 처치한 적의 수
+    int death_count;       ///< 사망 횟수
+    bool is_dead = false;  ///< 사망 판정
   };
 
   /**
@@ -44,13 +44,13 @@ class Hero : public mint::Actor {
    */
   void Tick(float delta_time) override;
 
-  // Getter 
+  // Getter
   inline struct ArenaInfo arena_info() const { return arena_info_; }
   inline const std::wstring& name() const { return name_; }
   inline int hp() const { return hp_; }
   inline int max_hp() const { return max_hp_; }
   inline int atk() const { return atk_; }
-  inline bool is_dead() const { return arena_info_.is_dead;}
+  inline bool is_dead() const { return arena_info_.is_dead; }
 
   /**
    * @brief 피해를 입는 함수
@@ -60,10 +60,23 @@ class Hero : public mint::Actor {
 
   /**
    * @brief 피해를 입히는 함수
-   * @param damage 입힐 피해량
+   * @param target 공격 대상
    */
+  void Attack(mint::Actor* target);
+
+  /**
+   * @brief 공격 대상을 설정하는 함수
+   * @param target 목표물 (Actor)
+   */
+  inline void set_target(mint::Actor* target) { target_ = target; }
 
  private:
+  /**
+   * @brief 타겟 방향으로 이동하는 함수
+   * @param target_pos 목표 위치
+   * @param delta_time 프레임 간 경과 시간
+   */
+  void MoveTowards(const mint::Vector2& target_pos, float delta_time);
 
   struct ArenaInfo arena_info_;   ///< 전투 통계 정보
   std::wstring name_;               ///< 용사 이름
@@ -72,7 +85,10 @@ class Hero : public mint::Actor {
   int atk_;                         ///< 공격력
   int speed_;                       ///< 속도
   char grade_;                      ///< 등급
-};
+
+  mint::Actor* target_ = nullptr;  ///< 현재 공격 대상
+  float attack_timer_ = 0.0f;      ///< 공격 쿨타임용 타이머
+  };
 
 }  // namespace guild
 

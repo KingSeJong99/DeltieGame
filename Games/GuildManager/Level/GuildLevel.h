@@ -9,7 +9,7 @@ namespace mint {
 namespace ui {
 class TextLayout;
 }
-}
+}  // namespace mint
 
 namespace guild {
 class Hero;
@@ -52,15 +52,13 @@ class GuildLevel : public mint::Level {
   void DrawUI(mint::Renderer& renderer);
 
   std::vector<Hero*> available_heroes_;  ///< 선발 가능한 용사 목록
-  std::vector<Hero*> party_;			 ///< 현재 선발된 파티원 목록
-  const int kMaxPartySize = 3;			 ///< 현재 선발된 파티원 목록
-  int selected_index_ = 0;				 ///< 현재 선택 중인 용사 인덱스
-  
-  mint::ui::TextLayout* ui_layout_ = nullptr; ///< UI 레이아웃 매니저
+  std::vector<Hero*> party_;             ///< 현재 선발된 파티원 목록
+  const int kMaxPartySize = 3;           ///< 현재 선발된 파티원 목록
+  int selected_index_ = 0;               ///< 현재 선택 중인 용사 인덱스
+
+  mint::ui::TextLayout* ui_layout_ = nullptr;  ///< UI 레이아웃 매니저
 };
 
 }  // namespace guild
 
 #endif  // GUILD_MANAGER_LEVEL_GUILD_LEVEL_H_
-
-

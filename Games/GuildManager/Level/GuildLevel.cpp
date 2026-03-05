@@ -10,17 +10,17 @@
 #include "MintEngine/Engine/Engine.h"
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Render/Renderer.h"
-#include "UI/TextLayout.h"
+#include "MintUI/TextLayout.h"
 
 namespace guild {
 
 GuildLevel::GuildLevel() : selected_index_(0) {}
 
-GuildLevel::~GuildLevel() { 
+GuildLevel::~GuildLevel() {
   // 부모 클래스의 소멸자가 actors_에 있는 객체를 delete 하기 전에
   // 리스트를 비워서 hero를 소멸하지 않도록 한다
-  actors_.clear(); 
-  
+  actors_.clear();
+
   if (ui_layout_) {
     delete ui_layout_;
     ui_layout_ = nullptr;
@@ -102,17 +102,21 @@ void GuildLevel::Draw(mint::Renderer& renderer, int width, int height) {
 
 void GuildLevel::DrawUI(mint::Renderer& renderer) {
   // UI 박스 그리기
-  ui_layout_->DrawBox(10, 5, 25, 12, L"길드 본부 - 용사 선발", mint::Color::kCyan);
+  ui_layout_->DrawBox(10, 5, 25, 12, L"길드 본부 - 용사 선발",
+                      mint::Color::kCyan);
 
   std::wstring status_text =
       L"선택 인덱스: " + std::to_wstring(selected_index_);
-  ui_layout_->DrawTextAligned(12, 8, 21, status_text, mint::ui::Alignment::Left, mint::Color::kWhite);
+  ui_layout_->DrawTextAligned(12, 8, 21, status_text, mint::ui::Alignment::Left,
+                              mint::Color::kWhite);
 
   // 3. 선택된 용사 이름 표시하기
   if (selected_index_ < static_cast<int>(available_heroes_.size())) {
     std::wstring hero_name =
         L"현재 선택: " + available_heroes_[selected_index_]->name();
-    ui_layout_->DrawTextAligned(12, 10, 21, hero_name, mint::ui::Alignment::Left, mint::Color::kBrightCyan);
+    ui_layout_->DrawTextAligned(12, 10, 21, hero_name,
+                                mint::ui::Alignment::Left,
+                                mint::Color::kBrightCyan);
   }
 
   // 4. 선택된 용사 리스트 출력
@@ -120,12 +124,11 @@ void GuildLevel::DrawUI(mint::Renderer& renderer) {
     return;
   }
 
-  ui_layout_->DrawTextAligned(12, 13, 21, L"현재 파티원:", mint::ui::Alignment::Left, mint::Color::kGray);
+  ui_layout_->DrawTextAligned(12, 13, 21, L"현재 파티원:",
+                              mint::ui::Alignment::Left, mint::Color::kGray);
   for (int idx = 0; idx < party_.size(); ++idx) {
     renderer.Submit(party_[idx]->name(), mint::Vector2(12 + (idx * 6), 14),
                     mint::Color::kBrightWhite);
   }
 }
-}  // namespace guild
-
 }  // namespace guild

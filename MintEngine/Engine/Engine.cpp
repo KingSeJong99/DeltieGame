@@ -104,10 +104,15 @@ void Engine::SetNewLevel(Level* new_level) {
     delete main_level_;
     main_level_ = nullptr;
   }
+  
   main_level_ = new_level;
+
+  if (main_level_) {
+    main_level_->BeginPlay();
+  }
 }
 
-Engine& Engine::Get() {
+Engine& Engine::Get() { 
   if (!instance_) {
     __debugbreak();
   }
@@ -188,6 +193,4 @@ void Engine::Draw() {
 
   renderer_->Present();
 }
-
-
 }  // namespace mint
