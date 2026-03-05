@@ -29,8 +29,8 @@ void Enemy::Tick(float delta_time) {
   mint::Vector2 my_pos = position();
   float distance_x = target_pos.x - my_pos.x;
 
-  // 1. 사거리 체크
-  if (abs(distance_x) <= 1.5f) {
+  // 1. 사거리 체크 (격자 1칸 이내)
+  if (abs(distance_x) <= 1.1f) {
     attack_timer_ += delta_time;
     float attack_speed = 2.0f / (speed_ > 0 ? speed_ : 1);
 
@@ -39,19 +39,25 @@ void Enemy::Tick(float delta_time) {
       Attack(target_);
     }
   } else {
-    // 2. 사거리 밖이면 이동
-    MoveTowards(target_pos, delta_time);
+    // 2. 사거리 밖이면 이동 쿨타임 체크 (이동 속도는 영웅보다 살짝 느리게)
+    static float move_timer = 0.0f;
+    move_timer += delta_time;
+    float move_delay = 1.2f / (speed_ > 0 ? speed_ : 1);
+
+    if (move_timer >= move_delay) {
+      move_timer = 0.0f;
+      MoveTowards(target_pos, delta_time);
+    }
   }
 }
 
 void Enemy::MoveTowards(const mint::Vector2& target_pos, float delta_time) {
   mint::Vector2 my_pos = position();
-  float direction = (target_pos.x > my_pos.x) ? 1.0f : -1.0f;
-
-  // 적 이동 속도: Hero보다는 살짝 느리게 (1.5 + speed * 0.15)
-  float move_velocity = 1.5f + (static_cast<float>(speed_) * 0.15f);
   
-  my_pos.x += direction * move_velocity * delta_time;
+  // 격자 한 칸씩 툭툭 이동
+  if (target_pos.x > my_pos.x) my_pos.x += 1.0f;
+  else if (target_pos.x < my_pos.x) my_pos.x -= 1.0f;
+  
   set_position(my_pos);
 }
 

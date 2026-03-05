@@ -29,11 +29,12 @@ void Hero::Tick(float delta_time) {
 
   mint::Vector2 target_pos = target_->position();
   mint::Vector2 my_pos = position();
+  
+  // 격자 좌표 차이 계산 (정수 단위로 비교)
   float distance_x = target_pos.x - my_pos.x;
 
-  // 1. 사거리 체크
-  if (abs(distance_x) <= 1.5f) {
-    // 사거리 내에 있으면 공격
+  // 1. 사거리 체크 (격자 1칸 이내)
+  if (abs(distance_x) <= 1.1f) {
     attack_timer_ += delta_time;
     float attack_speed = 2.0f / (speed_ > 0 ? speed_ : 1);
 
@@ -42,19 +43,27 @@ void Hero::Tick(float delta_time) {
       Attack(target_);
     }
   } else {
-    // 2. 사거리 밖이면 이동
-    MoveTowards(target_pos, delta_time);
+    // 2. 사거리 밖이면 이동 쿨타임 체크 (이동도 속도에 영향받게 함)
+    static float move_timer = 0.0f;
+    move_timer += delta_time;
+    float move_delay = 1.0f / (speed_ > 0 ? speed_ : 1);
+
+    if (move_timer >= move_delay) {
+      move_timer = 0.0f;
+      MoveTowards(target_pos, delta_time);
+    }
   }
 }
 
 void Hero::MoveTowards(const mint::Vector2& target_pos, float delta_time) {
   mint::Vector2 my_pos = position();
-  float direction = (target_pos.x > my_pos.x) ? 1.0f : -1.0f;
-
-  // 이동 속도: speed 능력치에 비례 (기본 1.0 + speed * 0.2)
-  float move_velocity = 2.0f + (static_cast<float>(speed_) * 0.2f);
   
-  my_pos.x += direction * move_velocity * delta_time;
+  // 격자 한 칸씩 툭툭 이동
+  if (target_pos.x > my_pos.x) my_pos.x += 1.0f;
+  else if (target_pos.x < my_pos.x) my_pos.x -= 1.0f;
+  
+  // @Todo: Y축 이동 추가 (지금은 X축 위주 전투니까)
+  
   set_position(my_pos);
 }
 

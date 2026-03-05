@@ -6,7 +6,9 @@ namespace mint {
 
 const Vector2 Vector2::kZero(0.0f, 0.0f);
 const Vector2 Vector2::kOne(1.0f, 1.0f);
-const Vector2 Vector2::kUp(0.0f, 1.0f);
+const Vector2 Vector2::kUp(0.0f, -1.0f);
+const Vector2 Vector2::kDown(0.0f, 1.0f);
+const Vector2 Vector2::kLeft(-1.0f, 0.0f);
 const Vector2 Vector2::kRight(1.0f, 0.0f);
 
 Vector2::Vector2() : x(0.0f), y(0.0f) {}

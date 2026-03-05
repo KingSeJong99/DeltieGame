@@ -208,9 +208,12 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClInclude Include="Core\Common.h" />
     <ClInclude Include="Core\RTTI.h" />
     <ClInclude Include="Core\Input.h" />
+    <ClInclude Include="Core\TurnManager.h" />
     <ClInclude Include="Core\Util.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Level\GridMap.h" />
     <ClInclude Include="Level\Level.h" />
+    <ClInclude Include="Math\IntVector2.h" />
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Render\Renderer.h" />
     <ClInclude Include="Render\ScreenBuffer.h" />
@@ -221,7 +224,10 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClCompile Include="Actor\Actor.cpp" />
     <ClCompile Include="Core\Color.cpp" />
     <ClCompile Include="Core\Input.cpp" />
+    <ClCompile Include="Core\TurnManager.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Level\GridMap.cpp" />
+    <ClCompile Include="Math\IntVector2.cpp" />
     <ClCompile Include="Level\Level.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Render\Renderer.cpp" />

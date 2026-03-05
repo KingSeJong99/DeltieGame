@@ -6,6 +6,7 @@
 #include "MintEngine/Level/Level.h"
 
 namespace mint {
+class GridMap;
 namespace ui {
 class TextLayout;
 }
@@ -55,10 +56,7 @@ class BattleLevel : public mint::Level {
   std::vector<Hero*> party_;     ///< 선발된 용사 파티원들
   std::vector<Enemy*> enemies_;  ///< 상대해야 할 적의 리스트
 
-  // Todo: 화면 크기에 맞게 동적으로 변할 수 있도록 변경해야함
-  int width_ = 100;   ///< UI가 그려질 가로폭
-  int height_ = 100;  ///< UI가 그려질 세로폭
-
+  mint::GridMap* map_ = nullptr;               ///< 전장 격자 맵
   mint::ui::TextLayout* ui_layout_ = nullptr;  ///< UI 레이아웃 매니저
 
   float battle_timer_ = 0.0f;  ///< 전투 턴 처리를 위한 타이머

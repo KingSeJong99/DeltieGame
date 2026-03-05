@@ -53,7 +53,9 @@ class MINT_API Vector2 {
   // 정적 상수 벡터
   static const Vector2 kZero;   ///< 원점 벡터 (0, 0)
   static const Vector2 kOne;    ///< 단위 벡터 (1, 1)
-  static const Vector2 kUp;     ///< 상단 방향 벡터 (0, 1)
+  static const Vector2 kUp;     ///< 상단 방향 벡터 (0, -1)
+  static const Vector2 kDown;   ///< 하단 방향 벡터 (0, 1)
+  static const Vector2 kLeft;   ///< 좌측 방향 벡터 (-1, 0)
   static const Vector2 kRight;  ///< 우측 방향 벡터 (1, 0)
 
   float x = 0.0f;  ///< X축 좌표
