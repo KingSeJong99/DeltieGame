@@ -109,10 +109,6 @@ xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
 :: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
 xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -139,10 +135,6 @@ xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
 :: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
 xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -167,10 +159,6 @@ xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
 :: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
 xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -197,10 +185,6 @@ xcopy "$(OutDir)*.dll" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
 :: [Step 3] 현재 프로젝트 출력 폴더($(OutDir))에서 빌드된 LIB 파일을 Library 폴더로 배포합니다.
 xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configuration)\" /d /y /i</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor\Actor.h" />
@@ -217,6 +201,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Render\Renderer.h" />
     <ClInclude Include="Render\ScreenBuffer.h" />
+    <ClInclude Include="Util\Pathfinder.h" />
     <ClInclude Include="Core\CpuTimer.h" />
     <ClInclude Include="Util\Util.h" />
   </ItemGroup>
@@ -224,7 +209,6 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClCompile Include="Actor\Actor.cpp" />
     <ClCompile Include="Core\Color.cpp" />
     <ClCompile Include="Core\Input.cpp" />
-    <ClCompile Include="Core\TurnManager.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Level\GridMap.cpp" />
     <ClCompile Include="Math\IntVector2.cpp" />
@@ -232,6 +216,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Render\Renderer.cpp" />
     <ClCompile Include="Render\ScreenBuffer.cpp" />
+    <ClCompile Include="Util\Pathfinder.cpp" />
     <ClCompile Include="Core\CpuTimer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

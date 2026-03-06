@@ -4,45 +4,38 @@
 #include <string>
 
 #include "MintEngine/Actor/Actor.h"
+#include "MintEngine/Core/TurnManager.h"
+#include "Common/GameTypes.h"
 
 namespace guild {
 
-/**
- * @brief 길드 매니저의 핵심 객체인 용사 클래스
- */
-class Hero : public mint::Actor {
+class Hero : public mint::Actor, public mint::ITurnActor {
   RTTI_DECLARATIONS(Hero, mint::Actor)
 
  public:
-  /**
-   * @brief 용사가 가진 전투 정보를 저장하는 구조체
-   */
   struct ArenaInfo {
-    int attack_point;      ///< 해당 라운드에 입힌 총 피해량
-    int kill_count;        ///< 처치한 적의 수
-    int death_count;       ///< 사망 횟수
-    bool is_dead = false;  ///< 사망 판정
+    int attack_point;
+    int kill_count;
+    int death_count;
+    bool is_dead = false;
+    bool is_my_turn = false;
+    bool is_action_finished = false;
+    int current_move_points = 0;      ///< 남은 이동 가능 횟수
+    CharacterState state = CharacterState::kWaiting;
   };
 
-  /**
-   * @brief Hero 생성자
-   * @param name 용사의 이름
-   * @param hp 최대 체력
-   * @param atk 공격력
-   * @param speed 속도
-   * @param grade 등급 (S, A, B, C)
-   * @param image 화면에 표시될 문자 (기본값 L"H")
-   */
   Hero(const std::wstring& name, int hp, int atk, int speed, char grade,
        const std::wstring& image = L"H");
 
   virtual ~Hero() = default;
 
-  /**
-   * @brief 매 프레임 업데이트 되는 로직
-   * @param delta_time 프레임 간 경과 시간
-   */
   void Tick(float delta_time) override;
+
+  // ITurnActor Overrides
+  inline int turn_speed() const override { return speed_; }
+  bool IsActionFinished() const override;
+  void OnTurnBegin() override;
+  void OnTurnEnd() override;
 
   // Getter
   inline struct ArenaInfo arena_info() const { return arena_info_; }
@@ -52,43 +45,24 @@ class Hero : public mint::Actor {
   inline int atk() const { return atk_; }
   inline bool is_dead() const { return arena_info_.is_dead; }
 
-  /**
-   * @brief 피해를 입는 함수
-   * @param damage 입을 피해량
-   */
   void TakeDamage(int damage);
-
-  /**
-   * @brief 피해를 입히는 함수
-   * @param target 공격 대상
-   */
   void Attack(mint::Actor* target);
-
-  /**
-   * @brief 공격 대상을 설정하는 함수
-   * @param target 목표물 (Actor)
-   */
   inline void set_target(mint::Actor* target) { target_ = target; }
 
  private:
-  /**
-   * @brief 타겟 방향으로 이동하는 함수
-   * @param target_pos 목표 위치
-   * @param delta_time 프레임 간 경과 시간
-   */
-  void MoveTowards(const mint::Vector2& target_pos, float delta_time);
+  void MoveTowards(const mint::Vector2& target_pos);
 
-  struct ArenaInfo arena_info_;   ///< 전투 통계 정보
-  std::wstring name_;               ///< 용사 이름
-  int hp_;                          ///< 현재 체력
-  int max_hp_;                      ///< 최대 체력
-  int atk_;                         ///< 공격력
-  int speed_;                       ///< 속도
-  char grade_;                      ///< 등급
+  struct ArenaInfo arena_info_;
+  std::wstring name_;
+  int hp_;
+  int max_hp_;
+  int atk_;
+  int speed_;
+  char grade_;
 
-  mint::Actor* target_ = nullptr;  ///< 현재 공격 대상
-  float attack_timer_ = 0.0f;      ///< 공격 쿨타임용 타이머
-  };
+  mint::Actor* target_ = nullptr;
+  float action_timer_ = 0.0f;
+};
 
 }  // namespace guild
 

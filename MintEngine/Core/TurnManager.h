@@ -16,8 +16,16 @@ class MINT_API ITurnActor {
  public:
   virtual ~ITurnActor() = default;
 
+  /**
+   * @brief 내 턴이 시작되었을 때 호출
+   */
   virtual void OnTurnBegin() = 0;
+
+  /**
+   * @brief 내 턴이 종료되었을 때 호출
+   */
   virtual void OnTurnEnd() = 0;
+
   virtual int turn_speed() const = 0;
   virtual bool IsActionFinished() const = 0;
 };

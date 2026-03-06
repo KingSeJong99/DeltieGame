@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "MintEngine/Level/Level.h"
+#include "MintEngine/Core/TurnManager.h"
 
 namespace mint {
 class GridMap;
@@ -58,6 +59,7 @@ class BattleLevel : public mint::Level {
 
   mint::GridMap* map_ = nullptr;               ///< 전장 격자 맵
   mint::ui::TextLayout* ui_layout_ = nullptr;  ///< UI 레이아웃 매니저
+  mint::TurnManager* turn_manager_ = nullptr;  ///< 턴매니저 
 
   float battle_timer_ = 0.0f;  ///< 전투 턴 처리를 위한 타이머
 };

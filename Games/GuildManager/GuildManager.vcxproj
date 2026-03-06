@@ -95,6 +95,7 @@ if exist "$(SolutionDir)Config" xcopy "$(SolutionDir)Config" "$(OutDir)Config\" 
   <ItemGroup>
     <ClInclude Include="Actor\Enemy.h" />
     <ClInclude Include="Actor\Hero.h" />
+    <ClInclude Include="Common\GameTypes.h" />
     <ClInclude Include="Level\BattleLevel.h" />
     <ClInclude Include="Level\GuildLevel.h" />
   </ItemGroup>

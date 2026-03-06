@@ -25,7 +25,7 @@ void TurnManager::StartNewRound() {
   for (auto participant : participants_) {
     turn_queue_.push(participant);
   }
-  
+
   current_actor_ = nullptr;
 }
 

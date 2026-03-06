@@ -1,5 +1,7 @@
 #include "BattleLevel.h"
 
+#include <iostream>
+
 #include "Actor/Enemy.h"
 #include "Actor/Hero.h"
 #include "MintEngine/Level/GridMap.h"
@@ -22,28 +24,32 @@ BattleLevel::~BattleLevel() {
     delete map_;
     map_ = nullptr;
   }
+
+  if (turn_manager_) {
+    delete turn_manager_;
+    turn_manager_ = nullptr;
+  }
 }
 
 void BattleLevel::BeginPlay() {
-  // 1. 격자 맵 생성 (가로 40, 세로 15 칸)
   map_ = new mint::GridMap(40, 15);
+  turn_manager_ = new mint::TurnManager();
 
-  // 2. 우리 파티 용사들을 격자 좌표 기준으로 배치
+  // 1. 아군 용사 등록 및 배치
   for (int i = 0; i < party_.size(); i++) {
     if (party_[i] == nullptr) continue;
 
-    // 격자 좌표 (5, 5+i*2)를 월드 좌표로 변환하여 설정
-    mint::Vector2 world_pos = map_->GridToWorld(5, 5 + (i * 2));
+    turn_manager_->AddParticipant(party_[i]);
     
-    // UI 박스 위치(x=5, y=5)를 고려한 오프셋
+    mint::Vector2 world_pos = map_->GridToWorld(5, 5 + (i * 2));
     world_pos.x += 6.0f;
     world_pos.y += 6.0f;
-    
+
     party_[i]->set_position(world_pos);
     AddNewActor(party_[i]);
   }
 
-  // 3. 적군 생성 및 배치
+  // 2. 적군 생성, 등록 및 배치
   Enemy* enemy1 = new Enemy(L"고블린", 50, 5, 2, L"G");
   Enemy* enemy2 = new Enemy(L"오크", 80, 10, 1, L"O");
   Enemy* enemy3 = new Enemy(L"트롤", 120, 15, 1, L"T");
@@ -53,24 +59,29 @@ void BattleLevel::BeginPlay() {
   enemies_.push_back(enemy3);
 
   for (int i = 0; i < enemies_.size(); i++) {
-    // 격자 좌표 (35, 5+i*2)를 월드 좌표로 변환
+    // 적군 리스트(enemies_)를 등록해야 함!!
+    turn_manager_->AddParticipant(enemies_[i]);
+
     mint::Vector2 world_pos = map_->GridToWorld(35, 5 + (i * 2));
-    
     world_pos.x += 6.0f;
     world_pos.y += 6.0f;
 
     enemies_[i]->set_position(world_pos);
     AddNewActor(enemies_[i]);
   }
+
+  // 3. 첫 라운드 시작
+  turn_manager_->StartNewRound();
+  turn_manager_->NextTurn();
 }
 
 void BattleLevel::Tick(float delta_time) {
-  // 아레나 논리적 경계 (UI 박스 안쪽)
+  // 아레나 경계 (UI 박스 안쪽)
   const float kMinX = 6.0f;
   const float kMaxX = 6.0f + static_cast<float>(map_->width()) - 1.0f;
   const float kMinY = 6.0f;
   const float kMaxY = 6.0f + static_cast<float>(map_->height()) - 1.0f;
-
+ 
   // 1. 타겟팅 매니저
   for (Hero* hero : party_) {
     if (hero->is_dead()) continue;
@@ -92,7 +103,7 @@ void BattleLevel::Tick(float delta_time) {
     }
   }
 
-  // 2. 모든 액터를 아레나 안에 가두기
+  // 2. 가두기 로직
   auto clamp_actor = [&](mint::Actor* actor) {
     if (!actor) return;
     mint::Vector2 pos = actor->position();
@@ -106,7 +117,17 @@ void BattleLevel::Tick(float delta_time) {
   for (auto* hero : party_) clamp_actor(hero);
   for (auto* enemy : enemies_) clamp_actor(enemy);
 
-  // 3. 부모 클래스의 Tick 호출
+  // 3. 턴 매니지먼트 로직
+  mint::ITurnActor* current = turn_manager_->current_actor();
+
+  if (current == nullptr || current->IsActionFinished()) {
+    if (turn_manager_->NextTurn() == nullptr) {
+      turn_manager_->StartNewRound();
+      turn_manager_->NextTurn();
+    }
+  }
+ 
+  // 4. 엔진 기본 틱 호출
   Level::Tick(delta_time);
 }
 
@@ -116,18 +137,14 @@ void BattleLevel::Draw(mint::Renderer& renderer, int width, int height) {
   }
 
   DrawBattleUI(renderer);
-
   Level::Draw(renderer, width, height);
 }
 
 void BattleLevel::DrawBattleUI(mint::Renderer& renderer) {
   if (!map_) return;
 
-  // 1. 메인 전장 (GridMap 크기에 맞춰 박스 그리기)
-  // 박스 위치 (5, 5), 가로폭은 맵너비+2, 세로폭은 맵높이+2
   ui_layout_->DrawBox(5, 5, map_->width() + 2, map_->height() + 2, L"GRID ARENA", mint::Color::kRed);
 
-  // 2. 하단 현황판
   int info_y = 5 + map_->height() + 3;
   ui_layout_->DrawBox(5, info_y, 25, 6, L"내 파티 정보", mint::Color::kCyan);
   for (int i = 0; i < party_.size(); ++i) {

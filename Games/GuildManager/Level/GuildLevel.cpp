@@ -28,9 +28,9 @@ GuildLevel::~GuildLevel() {
 }
 
 void GuildLevel::BeginPlay() {
-  Hero* hero1 = new Hero(L"시엘", 100, 20, 10, 'S', L"C");
-  Hero* hero2 = new Hero(L"용사", 80, 15, 5, 'A', L"H");
-  Hero* hero3 = new Hero(L"델티", 50, 5, 1, 'C', L"D");
+  Hero* hero1 = new Hero(L"시엘", 1000, 20, 10, 'S', L"C");
+  Hero* hero2 = new Hero(L"용사", 800, 15, 5, 'A', L"H");
+  Hero* hero3 = new Hero(L"델티", 500, 5, 1, 'C', L"D");
 
   AddNewActor(hero1);
   AddNewActor(hero2);
