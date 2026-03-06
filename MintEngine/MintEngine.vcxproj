@@ -209,6 +209,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
     <ClCompile Include="Actor\Actor.cpp" />
     <ClCompile Include="Core\Color.cpp" />
     <ClCompile Include="Core\Input.cpp" />
+    <ClCompile Include="Core\TurnManager.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Level\GridMap.cpp" />
     <ClCompile Include="Math\IntVector2.cpp" />

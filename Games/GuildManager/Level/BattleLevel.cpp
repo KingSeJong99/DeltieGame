@@ -34,6 +34,14 @@ BattleLevel::~BattleLevel() {
 void BattleLevel::BeginPlay() {
   map_ = new mint::GridMap(40, 15);
   turn_manager_ = new mint::TurnManager();
+  
+  for (auto* hero : party_) {
+    if (hero) hero->set_grid_map(map_);
+  }
+
+  // for (auto* enemy : enemies_) {
+  //   if (enemy) enemy->set_map(map_);
+  // }
 
   // 1. 아군 용사 등록 및 배치
   for (int i = 0; i < party_.size(); i++) {
