@@ -4,6 +4,7 @@
 #include <vector>
 #include <queue>
 #include <algorithm>
+#include <string>
 
 #include "MintEngine/Core/Common.h"
 
@@ -25,6 +26,11 @@ class MINT_API ITurnActor {
    * @brief 내 턴이 종료되었을 때 호출
    */
   virtual void OnTurnEnd() = 0;
+
+  /**
+   * @brief 객체의 이름을 반환 (디버깅 및 UI용)
+   */
+  virtual std::wstring name() const = 0;
 
   virtual int turn_speed() const = 0;
   virtual bool IsActionFinished() const = 0;

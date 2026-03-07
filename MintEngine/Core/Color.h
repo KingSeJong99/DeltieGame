@@ -35,7 +35,7 @@ enum class MINT_API Color : WORD {
 /**
  * @brief RGB 값을 콘솔에서 사용 가능한 가장 가까운 레거시 색상으로 변환
  */
-Color RgbToLegacyColor(int r, int g, int b);
+MINT_API Color RgbToLegacyColor(int r, int g, int b);
 
 }  // namespace mint
 

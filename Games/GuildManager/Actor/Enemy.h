@@ -32,13 +32,13 @@ class Enemy : public mint::Actor, public mint::ITurnActor {
   void Tick(float delta_time) override;
 
   // 인터페이스 오버라이딩
+  inline std::wstring name() const override { return name_; }
   inline int turn_speed() const override { return speed_; }
   bool IsActionFinished() const override;
   void OnTurnBegin() override;
   void OnTurnEnd() override;
 
   // Getter
-  inline const std::wstring& name() const { return name_; }
   inline int hp() const { return hp_; }
   inline int max_hp() const { return max_hp_; }
   inline int atk() const { return atk_; }

@@ -2,6 +2,7 @@
 
 #include <memory>  // smart_ptr
 #include <string>
+#include <algorithm> // find를 위해 추가
 
 #include "Actor/Hero.h"
 #include "Level/BattleLevel.h"
@@ -11,6 +12,7 @@
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Render/Renderer.h"
 #include "MintUI/TextLayout.h"
+#include "MintEngine/Core/Logger.h" // 로그용 헤더 위치 수정
 
 namespace guild {
 
@@ -58,34 +60,36 @@ void GuildLevel::Tick(float delta_time) {
   if (mint::Input::Get().GetKeyDown(VK_SPACE)) {
     Hero* selected_hero = available_heroes_[selected_index_];
 
-    // 용사 중복 체크
-    bool already_in_party = false;
-    for (Hero* hero : party_) {
-      if (hero == selected_hero) {
-        already_in_party = true;
-        break;
+    // 용사 중복 체크 및 제거 (토글 방식)
+    auto it = std::find(party_.begin(), party_.end(), selected_hero);
+    if (it != party_.end()) {
+      // 이미 파티에 있으면 제거
+      MINT_LOG_INFO(L"파티에서 제외: " + selected_hero->name());
+      party_.erase(it);
+    } else {
+      // 파티에 없으면 추가 (사이즈 체크)
+      if (party_.size() < kMaxPartySize) {
+        MINT_LOG_INFO(L"파티에 추가: " + selected_hero->name());
+        party_.push_back(selected_hero);
+      } else {
+        MINT_LOG_INFO("파티가 이미 가득 찼습니다!");
       }
-    }
-
-    // 파티가 찼는지 확인
-    if (party_.size() >= kMaxPartySize) {
-      // Todo: 로그나 UI를 제공해 더이상 선택이 불가능함을 알려야함
-      return;
-    }
-
-    // 조건을 통과하면 파티에 추가하기
-    if (!already_in_party) {
-      party_.push_back(selected_hero);
     }
   }
 
   // 레벨 전환
   if (mint::Input::Get().GetKeyDown(VK_RETURN)) {
+    MINT_LOG_INFO("ENTER 입력 감지 - 레벨 전환 시도");
+    MINT_LOG_INFO("현재 파티원 수: " + std::to_string(party_.size()));
+
     // 방어 코드
-    if (party_.size() != kMaxPartySize) return;
+    if (party_.size() != kMaxPartySize) {
+      MINT_LOG_INFO("오류: 파티원이 부족합니다! (필요: " + std::to_string(kMaxPartySize) + ")");
+      return;
+    }
 
+    MINT_LOG_INFO("조건 충족! BattleLevel로 전환합니다.");
     BattleLevel* battle_level = new BattleLevel(party_);
-
     mint::Engine::Get().SetNewLevel(battle_level);
   }
 }

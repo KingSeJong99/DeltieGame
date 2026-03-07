@@ -81,15 +81,9 @@ void Hero::Tick(float delta_time) {
 void Hero::MoveTowardsNextNode() {
   if (current_path_.empty()) return;
 
-  // 경로의 첫 번째 노드(현재 내 위치일 확률이 높음)는 건너뛰고 다음 노드로
-  // (Pathfinder 구현에 따라 시작점이 포함될 수도 안 될 수도 있음)
+  // 다음 이동할 목적지 노드를 꺼냄
   mint::IntVector2 next_grid = current_path_.front();
-  
-  // 만약 현재 위치와 같다면 다음 칸을 꺼냄
-  if (next_grid == map_->WorldToGrid(position()) && current_path_.size() > 1) {
-      current_path_.erase(current_path_.begin());
-      next_grid = current_path_.front();
-  }
+  current_path_.erase(current_path_.begin());
 
   // 월드 좌표로 변환 (UI 오프셋 6.0f 고려)
   mint::Vector2 next_world_pos = map_->GridToWorld(next_grid.x, next_grid.y);
@@ -97,7 +91,6 @@ void Hero::MoveTowardsNextNode() {
   next_world_pos.y += 6.0f;
 
   set_position(next_world_pos);
-  current_path_.erase(current_path_.begin());
 }
 
 void Hero::OnTurnBegin() {
@@ -118,6 +111,11 @@ void Hero::OnTurnBegin() {
     mint::IntVector2 end = map_->WorldToGrid(target_->position());
     current_path_ = mint::Pathfinder::FindPath(map_, start, end);
     
+    // 경로의 첫 번째 칸은 현재 내 위치이므로 미리 제거
+    if (!current_path_.empty() && current_path_.front() == start) {
+      current_path_.erase(current_path_.begin());
+    }
+
     // 마지막 칸(적군이 서 있는 칸)은 경로에서 제외
     if (!current_path_.empty() && current_path_.back() == end) {
         current_path_.pop_back();

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "MintEngine/Render/Renderer.h"
-#include "MintUI_API.h"
+#include "MintUI/MintUI_API.h"
 
 namespace mint {
 namespace ui {
@@ -16,7 +16,8 @@ namespace ui {
 enum class Alignment { Left, Center, Right };
 
 /**
- * @brief 렌더러를 사용하여 UI 요소(박스, 텍스트 정렬 등)를 그리는 유틸리티 클래스
+ * @brief 렌더러를 사용하여 UI 요소(박스, 텍스트 정렬 등)를 그리는 유틸리티
+ * 클래스
  */
 class MINT_UI_API TextLayout {
  public:
@@ -39,10 +40,10 @@ class MINT_UI_API TextLayout {
    * @param sorting_order 그리기 우선순위
    */
   void DrawBox(int x, int y, int width, int height,
-                const std::wstring& title = L"",
-                Color border_color = Color::kWhite,
-                Color bg_color = Color::kBlack,
-                Color title_color = Color::kWhite, int sorting_order = 0);
+               const std::wstring& title = L"",
+               Color border_color = Color::kWhite,
+               Color bg_color = Color::kBlack,
+               Color title_color = Color::kWhite, int sorting_order = 0);
 
   /**
    * @brief 지정된 영역 내에서 정렬된 텍스트를 그리는 함수
@@ -56,10 +57,9 @@ class MINT_UI_API TextLayout {
    * @param sorting_order 그리기 우선순위
    */
   void DrawTextAligned(int x, int y, int width, const std::wstring& text,
-                        Alignment align = Alignment::Left,
-                        Color fg_color = Color::kWhite,
-                        Color bg_color = Color::kBlack,
-                        int sorting_order = 0);
+                       Alignment align = Alignment::Left,
+                       Color fg_color = Color::kWhite,
+                       Color bg_color = Color::kBlack, int sorting_order = 0);
 
   /**
    * @brief 진행 상태를 표시하는 막대(HP바 등)를 그리는 함수
@@ -74,10 +74,8 @@ class MINT_UI_API TextLayout {
    * @param sorting_order 그리기 우선순위
    */
   void DrawProgressBar(int x, int y, int width, int height, float percentage,
-                        wchar_t fill_char = L'█',
-                        Color fg_color = Color::kWhite,
-                        Color bg_color = Color::kGray,
-                        int sorting_order = 0);
+                       wchar_t fill_char = L'█', Color fg_color = Color::kWhite,
+                       Color bg_color = Color::kGray, int sorting_order = 0);
 
  private:
   Renderer& renderer_;  ///< 그리기를 위임받을 렌더러 참조

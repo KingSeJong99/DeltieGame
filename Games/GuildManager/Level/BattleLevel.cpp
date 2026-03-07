@@ -90,26 +90,36 @@ void BattleLevel::Tick(float delta_time) {
   const float kMinY = 6.0f;
   const float kMaxY = 6.0f + static_cast<float>(map_->height()) - 1.0f;
  
-  // 1. 타겟팅 매니저
-  for (Hero* hero : party_) {
-    if (hero->is_dead()) continue;
-    for (Enemy* enemy : enemies_) {
-      if (!enemy->is_dead()) {
-        hero->set_target(enemy);
+  // 1. 타겟팅 매니저 (영웅과 적군을 1:1로 매칭시키거나 순차적으로 할당)
+  for (int i = 0; i < party_.size(); ++i) {
+    Hero* hero = party_[i];
+    if (hero->is_dead() || hero->arena_info().state != CharacterState::kWaiting) continue; 
+    
+    // 이미 타겟이 있고 살아있으면 유지
+    if (hero->target() && !dynamic_cast<Enemy*>(hero->target())->is_dead()) continue;
+
+    // 새로운 타겟 할당 (단순하게 인덱스 기반 혹은 가까운 적)
+    for (int j = 0; j < enemies_.size(); ++j) {
+      int target_idx = (i + j) % enemies_.size();
+      if (!enemies_[target_idx]->is_dead()) {
+        hero->set_target(enemies_[target_idx]);
         break;
       }
     }
   }
 
-  for (Enemy* enemy : enemies_) {
-    if (enemy->is_dead()) continue;
-    for (Hero* hero : party_) {
-      if (!hero->is_dead()) {
-        enemy->set_target(hero);
-        break;
-      }
-    }
-  }
+  // for (Enemy* enemy : enemies_) {
+  //   if (enemy->is_dead()) continue;
+  //   // 적군도 타겟이 없으면 아군 중 하나를 선택
+  //   if (!enemy->target() || dynamic_cast<Hero*>(enemy->target())->is_dead()) {
+  //     for (Hero* hero : party_) {
+  //       if (!hero->is_dead()) {
+  //         enemy->set_target(hero);
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
   // 2. 가두기 로직
   auto clamp_actor = [&](mint::Actor* actor) {

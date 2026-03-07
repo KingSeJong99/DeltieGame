@@ -38,9 +38,9 @@ Vector2 GridMap::GridToWorld(int x, int y) const {
 }
 
 IntVector2 GridMap::WorldToGrid(const Vector2& world_pos) const {
-  // float 좌표를 int 격자 좌표로 내림(버림) 처리
-  int grid_x = static_cast<int>(world_pos.x);
-  int grid_y = static_cast<int>(world_pos.y);
+  // UI 박스 오프셋 6.0f를 고려하여 역변환
+  int grid_x = static_cast<int>(world_pos.x - 6.0f);
+  int grid_y = static_cast<int>(world_pos.y - 6.0f);
   return IntVector2(grid_x, grid_y);
 }
 

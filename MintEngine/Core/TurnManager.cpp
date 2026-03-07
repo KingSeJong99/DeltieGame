@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "MintEngine/Core/Logger.h" // 로그용 헤더 추가
+
 namespace mint {
 
 void TurnManager::AddParticipant(ITurnActor* actor) {
@@ -10,6 +12,8 @@ void TurnManager::AddParticipant(ITurnActor* actor) {
 }
 
 void TurnManager::StartNewRound() {
+  MINT_LOG_INFO("--- START NEW ROUND ---");
+
   // 1. 기존 큐 비우기
   while (!turn_queue_.empty()) {
     turn_queue_.pop();
@@ -21,8 +25,12 @@ void TurnManager::StartNewRound() {
               return a->turn_speed() > b->turn_speed();
             });
 
-  // 3. 큐에 다시 채우기
+  // 3. 큐에 다시 채우기 및 로그 출력
   for (auto participant : participants_) {
+    std::wstring info = L"[TURN ORDER] Name: " + participant->name() + 
+                       L", Speed: " + std::to_wstring(participant->turn_speed());
+    MINT_LOG_INFO(info);
+    
     turn_queue_.push(participant);
   }
 
