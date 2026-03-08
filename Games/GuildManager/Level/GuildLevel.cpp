@@ -1,36 +1,34 @@
 #include "GuildLevel.h"
 
-#include <memory>  // smart_ptr
+#include <algorithm>  // find를 위해 추가
+#include <memory>     // smart_ptr
 #include <string>
-#include <algorithm> // find를 위해 추가
 
 #include "Actor/Hero.h"
 #include "Level/BattleLevel.h"
 #include "MintEngine/Core/Color.h"
 #include "MintEngine/Core/Input.h"
+#include "MintEngine/Core/Logger.h"
 #include "MintEngine/Engine/Engine.h"
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Render/Renderer.h"
 #include "MintUI/TextLayout.h"
-#include "MintEngine/Core/Logger.h" // 로그용 헤더 위치 수정
 
 namespace guild {
 
 GuildLevel::GuildLevel() : selected_index_(0) {}
 
 GuildLevel::~GuildLevel() {
-  // 부모 클래스의 소멸자가 actors_에 있는 객체를 delete 하기 전에
-  // 리스트를 비워서 hero를 소멸하지 않도록 한다
-  actors_.clear();
-
   if (ui_layout_) {
     delete ui_layout_;
     ui_layout_ = nullptr;
   }
+  MINT_LOG_INFO( L"레벨을 퇴장합니다.");
 }
 
 void GuildLevel::BeginPlay() {
-  Hero* hero1 = new Hero(L"시엘", 1000, 20, 10, 'S', L"C");
+  MINT_LOG_INFO(L"레벨을 불러오고 있어요.");
+  Hero* hero1 = new Hero(L"시엘", 1000, 20, 10, 'S', L"S");
   Hero* hero2 = new Hero(L"용사", 800, 15, 5, 'A', L"H");
   Hero* hero3 = new Hero(L"델티", 500, 5, 1, 'C', L"D");
 
@@ -41,6 +39,7 @@ void GuildLevel::BeginPlay() {
   available_heroes_.push_back(hero1);
   available_heroes_.push_back(hero2);
   available_heroes_.push_back(hero3);
+  MINT_LOG_INFO(L"레벨을 불러왔어요.");
 }
 
 void GuildLevel::Tick(float delta_time) {
@@ -64,31 +63,36 @@ void GuildLevel::Tick(float delta_time) {
     auto it = std::find(party_.begin(), party_.end(), selected_hero);
     if (it != party_.end()) {
       // 이미 파티에 있으면 제거
-      MINT_LOG_INFO(L"파티에서 제외: " + selected_hero->name());
+      MINT_LOG_INFO_TAG(selected_hero->name(), L"파티에서 제거 했습니다.");
       party_.erase(it);
     } else {
       // 파티에 없으면 추가 (사이즈 체크)
       if (party_.size() < kMaxPartySize) {
-        MINT_LOG_INFO(L"파티에 추가: " + selected_hero->name());
+        MINT_LOG_INFO_TAG(selected_hero->name(), L"파티에 추가 했습니다.");
         party_.push_back(selected_hero);
       } else {
-        MINT_LOG_INFO("파티가 이미 가득 찼습니다!");
+        MINT_LOG_WARN(L"파티가 이미 가득 찼습니다!");
       }
     }
   }
 
   // 레벨 전환
   if (mint::Input::Get().GetKeyDown(VK_RETURN)) {
-    MINT_LOG_INFO("ENTER 입력 감지 - 레벨 전환 시도");
-    MINT_LOG_INFO("현재 파티원 수: " + std::to_string(party_.size()));
+    MINT_LOG_INFO(L"ENTER 입력 감지 - 레벨 전환 시도");
+    MINT_LOG_INFO(L"현재 파티원 수: " + std::to_wstring(party_.size()));
 
     // 방어 코드
     if (party_.size() != kMaxPartySize) {
-      MINT_LOG_INFO("오류: 파티원이 부족합니다! (필요: " + std::to_string(kMaxPartySize) + ")");
+      MINT_LOG_WARN(L"파티원이 부족합니다! (필요: " +
+                    std::to_wstring(kMaxPartySize) + L")");
       return;
     }
 
-    MINT_LOG_INFO("조건 충족! BattleLevel로 전환합니다.");
+    MINT_LOG_INFO(L"파티를 구성하였습니다.");
+
+    for (Hero* hero : party_) {
+      RemoveActorWithoutDeleting(hero);
+    }
     BattleLevel* battle_level = new BattleLevel(party_);
     mint::Engine::Get().SetNewLevel(battle_level);
   }

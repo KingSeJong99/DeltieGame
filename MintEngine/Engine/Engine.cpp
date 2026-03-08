@@ -1,10 +1,13 @@
 #include "MintEngine/Engine/Engine.h"
 
 #include <Windows.h>
+
+#include <cassert>
 #include <cstdio>
 #include <iostream>
 
 #include "MintEngine/Core/Input.h"
+#include "MintEngine/Core/Logger.h"
 #include "MintEngine/Core/Util.h"
 #include "MintEngine/Level/Level.h"
 #include "MintEngine/Render/Renderer.h"
@@ -14,7 +17,18 @@ namespace mint {
 Engine* Engine::instance_ = nullptr;
 
 Engine::Engine() {
+  MINT_LOG_INFO(L"[Engine] =====================");
+  if (instance_ != nullptr) {
+    MINT_LOG_ERROR(L"엔진 인스턴스가 이미 존재하고 있습니다!!");
+
+    assert(instance_ == nullptr);
+    __debugbreak();
+    return;
+  }
+
   instance_ = this;
+
+  MINT_LOG_INFO(L"MintEngine 초기화 시작 합니다 ...");
 
   // 입력 관리자 생성 (Input 클래스 리팩토링 필요할 수 있음)
   input_ = new Input();
@@ -22,16 +36,22 @@ Engine::Engine() {
   // 설정 로드
   LoadSetting();
 
+  MINT_LOG_INFO(L"엔진 설정 로드 완료 : Width = " +
+                               std::to_wstring(setting_.width) + L", Height=" +
+                               std::to_wstring(setting_.height));
+
   // 렌더러 생성
-  renderer_ = new Renderer(Vector2(static_cast<float>(setting_.width), 
+  renderer_ = new Renderer(Vector2(static_cast<float>(setting_.width),
                                    static_cast<float>(setting_.height)));
 
   // 화면 크기 저장
-  screen_size_ = Vector2(static_cast<float>(setting_.width), 
+  screen_size_ = Vector2(static_cast<float>(setting_.width),
                          static_cast<float>(setting_.height));
 
-  // 커서 끄기
+  // 커서 끄기, 렌더링 목적
   util::TurnOffCursor();
+
+  MINT_LOG_INFO(L"MintEngine을 초기화 완료했어요.");
 }
 
 Engine::~Engine() {
@@ -49,6 +69,7 @@ Engine::~Engine() {
 }
 
 void Engine::Run() {
+  MINT_LOG_INFO(L"메인 루프 진입");
   LARGE_INTEGER frequency;
   QueryPerformanceFrequency(&frequency);
 
@@ -61,10 +82,9 @@ void Engine::Run() {
   current_time = time.QuadPart;
   previous_time = current_time;
 
-  setting_.framerate = (setting_.framerate == 0.0f) ? 60.0f : setting_.framerate;
+  setting_.framerate =
+      (setting_.framerate == 0.0f) ? 60.0f : setting_.framerate;
   float one_frame_time = 1.0f / setting_.framerate;
-
-  BeginPlay();
 
   while (!is_quit_) {
     QueryPerformanceCounter(&time);
@@ -95,16 +115,14 @@ void Engine::Run() {
   Shutdown();
 }
 
-void Engine::QuitEngine() { 
-  is_quit_ = true; 
-}
+void Engine::QuitEngine() { is_quit_ = true; }
 
 void Engine::SetNewLevel(Level* new_level) {
   if (main_level_) {
     delete main_level_;
     main_level_ = nullptr;
   }
-  
+
   main_level_ = new_level;
 
   if (main_level_) {
@@ -112,8 +130,9 @@ void Engine::SetNewLevel(Level* new_level) {
   }
 }
 
-Engine& Engine::Get() { 
+Engine& Engine::Get() {
   if (!instance_) {
+    MINT_LOG_WARN(L"MintEngine이 존재하지 않습니다 !! ");
     __debugbreak();
   }
   return *instance_;
@@ -127,15 +146,16 @@ void Engine::Clear(CHAR_INFO* buffer, int width, int height) {
   }
 }
 
-void Engine::Shutdown() {
-  util::TurnOnCursor();
-}
+void Engine::Shutdown() { util::TurnOnCursor(); }
 
 void Engine::LoadSetting() {
   FILE* file = nullptr;
   fopen_s(&file, "Config/Setting.txt", "rt");
 
   if (!file) {
+    MINT_LOG_WARN(
+        L"[Engine] 설정 파일(Config/Setting.txt)을 찾지 못했습니다. 기본값을 "
+        L"사용합니다.");
     // 기본 설정값 사용
     setting_.framerate = 60.0f;
     setting_.width = 80;
@@ -185,9 +205,9 @@ void Engine::Draw() {
   }
 
   renderer_->Clear();
-  main_level_->Draw(*renderer_, static_cast<int>(screen_size_.x), 
+  main_level_->Draw(*renderer_, static_cast<int>(screen_size_.x),
                     static_cast<int>(screen_size_.y));
-  
+
   // 렌더 큐에 쌓인 모든 명령(Submit으로 들어온 것들)을 처리한다
   renderer_->Render();
 

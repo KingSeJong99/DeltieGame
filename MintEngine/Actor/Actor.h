@@ -2,6 +2,7 @@
 #define MINT_ENGINE_ACTOR_ACTOR_H_
 
 #include <Windows.h>
+
 #include <string>
 
 #include "MintEngine/Core/Color.h"
@@ -13,19 +14,23 @@ namespace mint {
 class Level;
 
 /**
- * @brief 게임 내 모든 객체의 기본 클래스
+ * @class Actor
+ * @brief 게임 내 모든 객체의 기본 클래스.
+ * @note 위치, 외형(문자), 색상 등의 기본 정보를 가지며, Level에 의해 관리된다.
  */
 class MINT_API Actor : public RTTI {
   RTTI_DECLARATIONS(Actor, RTTI)
 
  public:
   /**
-   * @brief Actor 생성자
-   * @param image 화면에 표시될 유니코드 문자열
-   * @param position 초기 좌표
-   * @param color 초기 색상
+   * @brief Actor 생성자.
+   * @param name 액터 식별을 위한 이름.
+   * @param image 화면에 표시될 유니코드 문자열.
+   * @param position 초기 좌표. (기본값 Vector2::kZero)
+   * @param color 초기 색상. (기본값 Color::kWhite)
    */
-  explicit Actor(const std::wstring& image = L" ", 
+  explicit Actor(const std::wstring& name = L"UnknownActor",
+                 const std::wstring& image = L" ",
                  const Vector2& position = Vector2::kZero,
                  Color color = Color::kWhite);
   virtual ~Actor();
@@ -34,6 +39,10 @@ class MINT_API Actor : public RTTI {
   virtual void BeginPlay();
   virtual void Tick(float delta_time);
   virtual void Draw(CHAR_INFO* back_buffer, int width, int height);
+
+  // 이름 설정 및 반환
+  inline void set_name(const std::wstring& name) { name_ = name; }
+  inline const std::wstring& name() const { return name_; }
 
   // 위치 설정 및 반환
   void set_position(const Vector2& new_position);
@@ -54,7 +63,8 @@ class MINT_API Actor : public RTTI {
   bool is_active_ = true;
   bool destroy_requested_ = false;
 
-  std::wstring image_;     ///< 화면에 표시될 유니코드 문자열
+  std::wstring name_;   ///< 액터 식별용 이름. (로그 출력 시 사용)
+  std::wstring image_;  ///< 화면에 표시될 유니코드 문자열
   Color color_ = Color::kWhite;
   Level* owner_ = nullptr;
   int sorting_order_ = 0;

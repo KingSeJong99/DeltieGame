@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "MintEngine/Core/Logger.h" // 로그용 헤더 추가
+#include "MintEngine/Core/Logger.h" 
 
 namespace mint {
 
@@ -12,7 +12,7 @@ void TurnManager::AddParticipant(ITurnActor* actor) {
 }
 
 void TurnManager::StartNewRound() {
-  MINT_LOG_INFO("--- START NEW ROUND ---");
+  MINT_LOG_INFO(L"--- START NEW ROUND ---");
 
   // 1. 기존 큐 비우기
   while (!turn_queue_.empty()) {

@@ -1,4 +1,6 @@
 #include "Hero.h"
+
+#include "MintEngine/Core/Logger.h"
 #include "Enemy.h"
 #include "MintEngine/Level/GridMap.h"
 #include "MintEngine/Math/Vector2.h"
@@ -8,8 +10,7 @@ namespace guild {
 
 Hero::Hero(const std::wstring& name, int hp, int atk, int speed, char grade,
            const std::wstring& image)
-    : mint::Actor(image),
-      name_(name),
+    : mint::Actor(name, image),
       hp_(hp),
       max_hp_(hp),
       atk_(atk),
@@ -19,15 +20,18 @@ Hero::Hero(const std::wstring& name, int hp, int atk, int speed, char grade,
 }
 
 void Hero::Tick(float delta_time) {
-  if (is_dead() || !arena_info_.is_my_turn || arena_info_.is_action_finished) return;
+  if (is_dead() || !arena_info_.is_my_turn || arena_info_.is_action_finished)
+    return;
 
   if (!target_) {
+    MINT_LOG_DEBUG_TAG(name(), L"목표가 없어 행동을 종료합니다.");
     arena_info_.is_action_finished = true;
     return;
   }
 
   Enemy* enemy_target = dynamic_cast<Enemy*>(target_);
   if (enemy_target && enemy_target->is_dead()) {
+    MINT_LOG_DEBUG_TAG(name(), L"새로운 대상을 찾는 중...");
     target_ = nullptr;
     arena_info_.is_action_finished = true;
     return;
@@ -36,19 +40,25 @@ void Hero::Tick(float delta_time) {
   // 격자 좌표 기준 거리 계산
   mint::IntVector2 my_grid = map_->WorldToGrid(position());
   mint::IntVector2 target_grid = map_->WorldToGrid(target_->position());
-  
-  int dist = std::abs(my_grid.x - target_grid.x) + std::abs(my_grid.y - target_grid.y);
+
+  int dist =
+      std::abs(my_grid.x - target_grid.x) + std::abs(my_grid.y - target_grid.y);
 
   switch (arena_info_.state) {
     case CharacterState::kDeciding:
       // 사거리(1칸) 안에 있으면 공격
       if (dist <= 1) {
+        MINT_LOG_DEBUG_TAG(
+            name(), target_->name() + L"을 향해 공격합니다.");
         arena_info_.state = CharacterState::kAttacking;
       } else {
-        // 사거리 밖이고 이동력이 남았으며 경로가 있으면 이동
+        // 사거리 밖이고 행동력이 남았으며 경로가 있으면 이동
         if (arena_info_.current_move_points > 0 && !current_path_.empty()) {
+          MINT_LOG_DEBUG_TAG(name(), target_->name() +
+                                     L"을 향해 이동합니다.");
           arena_info_.state = CharacterState::kMoving;
         } else {
+          MINT_LOG_DEBUG_TAG(name(), L"행동력을 모두 소진하여 턴을 마칩니다.");
           arena_info_.is_action_finished = true;
         }
       }
@@ -105,12 +115,14 @@ void Hero::OnTurnBegin() {
   arena_info_.current_move_points = speed_;
   action_timer_ = 0.0f;
 
+  MINT_LOG_INFO_TAG(name(), L"턴 시작! 행동력: " + std::to_wstring(speed_));
+
   // 턴 시작 시 길 찾기 수행!
   if (map_ && target_) {
     mint::IntVector2 start = map_->WorldToGrid(position());
     mint::IntVector2 end = map_->WorldToGrid(target_->position());
     current_path_ = mint::Pathfinder::FindPath(map_, start, end);
-    
+
     // 경로의 첫 번째 칸은 현재 내 위치이므로 미리 제거
     if (!current_path_.empty() && current_path_.front() == start) {
       current_path_.erase(current_path_.begin());
@@ -118,7 +130,7 @@ void Hero::OnTurnBegin() {
 
     // 마지막 칸(적군이 서 있는 칸)은 경로에서 제외
     if (!current_path_.empty() && current_path_.back() == end) {
-        current_path_.pop_back();
+      current_path_.pop_back();
     }
   }
 }
