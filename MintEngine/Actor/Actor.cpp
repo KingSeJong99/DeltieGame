@@ -23,21 +23,10 @@ void Actor::BeginPlay() {
 
 void Actor::Tick(float delta_time) {}
 
-void Actor::Draw(CHAR_INFO* back_buffer, int width, int height) {
-  int x = static_cast<int>(position_.x);
-  int y = static_cast<int>(position_.y);
-
-  if (x < 0 || x >= width || y < 0 || y >= height) {
-    return;
-  }
-
-  int index = y * width + x;
-
+void Actor::Draw(Renderer& renderer, int width, int height) {
   if (!image_.empty()) {
-    // 유니코드 문자열의 첫 번째 문자를 출력
-    back_buffer[index].Char.UnicodeChar = image_[0];
+    renderer.Submit(image_, position_, color_, Color::kBlack, sorting_order_);
   }
-  back_buffer[index].Attributes = static_cast<WORD>(color_);
 }
 
 void Actor::set_position(const Vector2& new_position) {

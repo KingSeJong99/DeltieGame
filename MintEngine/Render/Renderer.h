@@ -48,17 +48,18 @@ class MINT_API Renderer {
    * @note 내부적으로 UNICODE 버전의 Submit을 호출함
    */
   void Submit(const char* text, const Vector2& position,
-              Color color = Color::kWhite, int sorting_order = 0);
+              Color color = Color::kWhite, Color bg_color = Color::kBlack, int sorting_order = 0);
 
   /**
    * @brief 그리기에 필요한 데이터를 제출하는 함수 (UNICODE)
    * @param text 출력할 유니코드 문자열
    * @param position 출력할 화면 좌표
    * @param color 텍스트 색상
+   * @param bg_color 배경 색상
    * @param sorting_order 그리기 우선순위
    */
   void Submit(std::wstring text, const Vector2& position,
-              Color color = Color::kWhite, int sorting_order = 0);
+              Color color = Color::kWhite, Color bg_color = Color::kBlack, int sorting_order = 0);
 
   /**
    * @brief 문자열의 시각적 너비를 계산하는 정적 헬퍼 함수
@@ -132,6 +133,7 @@ class MINT_API Renderer {
     std::wstring text;      ///< 출력할 텍스트
     Vector2 position;       ///< 출력 위치
     Color color;            ///< 텍스트 색상
+    Color bg_color = Color::kBlack; ///< 배경 색상
     int sorting_order = 0;  ///< 그리기 우선순위
   };
 

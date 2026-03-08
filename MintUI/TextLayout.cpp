@@ -23,7 +23,7 @@ void TextLayout::DrawBox(int x, int y, int width, int height,
     int title_width = Renderer::CalculateVisualWidth(title);
     int start_x = x + (width - title_width) / 2;
     renderer_.Submit(title, Vector2(static_cast<float>(start_x), static_cast<float>(y)),
-                     title_color, sorting_order + 1);
+                     title_color, Color::kBlack, sorting_order + 1);
   }
 
   // 측면 테두리 및 배경 채우기
@@ -69,7 +69,7 @@ void TextLayout::DrawTextAligned(int x, int y, int width,
   }
 
   renderer_.Submit(text, Vector2(static_cast<float>(draw_x), static_cast<float>(y)),
-                   fg_color, sorting_order);
+                   fg_color, bg_color, sorting_order);
 }
 
 void TextLayout::DrawProgressBar(int x, int y, int width, int height,

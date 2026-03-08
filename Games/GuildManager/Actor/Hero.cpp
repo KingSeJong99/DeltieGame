@@ -5,6 +5,7 @@
 #include "MintEngine/Level/GridMap.h"
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Util/Pathfinder.h"
+#include "MintEngine/Render/Renderer.h"
 
 namespace guild {
 
@@ -17,6 +18,23 @@ Hero::Hero(const std::wstring& name, int hp, int atk, int speed, char grade,
       speed_(speed),
       grade_(grade) {
   arena_info_ = {0, 0, 0, false, false, false, 0, CharacterState::kWaiting};
+}
+
+void Hero::Draw(mint::Renderer& renderer, int width, int height) {
+  mint::Color bg_color = mint::Color::kBlack;
+  if (map_) {
+    mint::IntVector2 grid_pos = map_->WorldToGrid(position());
+    if (map_->IsWithinBounds(grid_pos.x, grid_pos.y)) {
+      bg_color = map_->tile(grid_pos.x, grid_pos.y).is_walkable ? 
+                 mint::Color::kBrightYellow : mint::Color::kDarkGray;
+    }
+  }
+
+  if (is_dead()) {
+    renderer.Submit(image_, position(), mint::Color::kDarkGray, bg_color, sorting_order_);
+  } else {
+    renderer.Submit(image_, position(), color_, bg_color, sorting_order_);
+  }
 }
 
 void Hero::Tick(float delta_time) {

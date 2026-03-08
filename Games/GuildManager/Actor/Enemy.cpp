@@ -2,6 +2,7 @@
 
 #include "Hero.h"
 #include "MintEngine/Core/Logger.h"
+#include "MintEngine/Render/Renderer.h"
 #include "MintEngine/Level/GridMap.h"
 #include "MintEngine/Math/Vector2.h"
 #include "MintEngine/Util/Pathfinder.h"
@@ -12,6 +13,23 @@ Enemy::Enemy(const std::wstring& name, int hp, int atk, int speed,
              const std::wstring& image)
     : mint::Actor(name, image), hp_(hp), max_hp_(hp), atk_(atk), speed_(speed) {
   arena_info_ = {0, 0, 0, false, false, false, 0, CharacterState::kWaiting};
+}
+
+void Enemy::Draw(mint::Renderer& renderer, int width, int height) {
+  mint::Color bg_color = mint::Color::kBlack;
+  if (map_) {
+    mint::IntVector2 grid_pos = map_->WorldToGrid(position());
+    if (map_->IsWithinBounds(grid_pos.x, grid_pos.y)) {
+      bg_color = map_->tile(grid_pos.x, grid_pos.y).is_walkable ? 
+                 mint::Color::kBrightYellow : mint::Color::kDarkGray;
+    }
+  }
+
+  if (is_dead()) {
+    renderer.Submit(image_, position(), mint::Color::kDarkGray, bg_color, sorting_order_);
+  } else {
+    renderer.Submit(image_, position(), color_, bg_color, sorting_order_);
+  }
 }
 
 void Enemy::Tick(float delta_time) {

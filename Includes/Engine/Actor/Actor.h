@@ -25,7 +25,8 @@ namespace Mint
 		// 게임 플레이 이벤트
 		virtual void BeginPlay();
 		virtual void Tick(float deltaTime);
-		virtual void Draw(CHAR_INFO* backBuffer, int width, int height);
+		virtual void Draw(Renderer& renderer, int width, int height);
+
 
 		// 위치 변경 및 읽기 함수
 		void SetPosition(const Vector2& newPosition);

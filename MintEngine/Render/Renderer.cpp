@@ -26,7 +26,7 @@ void Renderer::Frame::Clear(const Vector2& screen_size) {
       info.Char.UnicodeChar = L' ';
       info.Attributes = 0;
 
-      sorting_order_array_[index] = -1;
+      sorting_order_array_[index] = -9999;
     }
   }
 }
@@ -61,7 +61,6 @@ bool Renderer::IsWideChar(wchar_t ch) {
   if ((ch >= 0x1100 && ch <= 0x11FF) ||  // Hangul Jamo
       (ch >= 0xAC00 && ch <= 0xD7AF) ||  // Hangul Syllables
       (ch >= 0x3000 && ch <= 0x303F) ||  // CJK Symbols
-      //(ch >= 0x2000 && ch <= 0x2BFF) ||  // 박스 기호 및 각종 특수 기호 범위 추가
       (ch >= 0x4E00 && ch <= 0x9FFF) ||  // CJK Unified Ideographs
       (ch >= 0xFF00 && ch <= 0xFFEF))    // Fullwidth Forms
   {
@@ -127,7 +126,7 @@ void Renderer::DrawCommand(const RenderCommand& command) {
       continue;
     }
 
-    DrawCharacter(target_x, target_y, ch, command.color, command.sorting_order);
+    SetCell(target_x, target_y, ch, command.color, command.bg_color, command.sorting_order);
     target_x += char_width;
   }
 }
@@ -154,23 +153,24 @@ void Renderer::Clear() {
 }
 
 void Renderer::Submit(const char* text, const Vector2& position, Color color,
-                      int sorting_order) {
+                      Color bg_color, int sorting_order) {
   if (text == nullptr) return;
 
   std::string s(text);
   std::wstring ws(s.begin(), s.end());
   
-  Submit(std::move(ws), position, color, sorting_order);
+  Submit(std::move(ws), position, color, bg_color, sorting_order);
 }
 
 void Renderer::Submit(std::wstring text, const Vector2& position, Color color,
-                      int sorting_order) {
+                      Color bg_color, int sorting_order) {
   if (text.empty()) return;
 
   RenderCommand command = {};
   command.text = std::move(text);
   command.position = position;
   command.color = color;
+  command.bg_color = bg_color;
   command.sorting_order = sorting_order;
 
   render_queue_.emplace_back(std::move(command));
@@ -201,7 +201,6 @@ void Renderer::Present() {
                                      buffer_coord, &write_region);
 
   if (!success) {
-    // DWORD error = GetLastError();
     __debugbreak();
   }
 

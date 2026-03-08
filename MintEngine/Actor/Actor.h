@@ -12,6 +12,7 @@
 namespace mint {
 
 class Level;
+class Renderer;
 
 /**
  * @class Actor
@@ -38,7 +39,7 @@ class MINT_API Actor : public RTTI {
   // 게임 플레이 이벤트
   virtual void BeginPlay();
   virtual void Tick(float delta_time);
-  virtual void Draw(CHAR_INFO* back_buffer, int width, int height);
+  virtual void Draw(Renderer& renderer, int width, int height);
 
   // 이름 설정 및 반환
   inline void set_name(const std::wstring& name) { name_ = name; }

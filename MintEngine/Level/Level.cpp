@@ -60,7 +60,7 @@ void Level::Draw(Renderer& renderer, int width, int height) {
   });
 
   for (auto* actor : active_actors) {
-    actor->Draw(renderer.GetFrameBuffer(), width, height);
+    actor->Draw(renderer, width, height);
   }
 }
 

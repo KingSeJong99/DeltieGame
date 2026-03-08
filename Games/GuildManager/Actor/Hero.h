@@ -11,6 +11,7 @@
 
 namespace mint {
 class GridMap;
+class Renderer;
 }
 
 namespace guild {
@@ -58,6 +59,9 @@ class Hero : public mint::Actor, public mint::ITurnActor {
 
   /** @brief 매 프레임 용사의 AI 로직 및 상태를 업데이트 한다. */
   void Tick(float delta_time) override;
+  
+  /** @brief 용사의 상태(사망 여부 등)를 반영하여 화면에 그린다. */
+  void Draw(mint::Renderer& renderer, int width, int height) override;
 
   // --- ITurnActor 인터페이스 구현 ---
   /** @brief 부모 클래스 Actor의 이름을 반환한다. */
