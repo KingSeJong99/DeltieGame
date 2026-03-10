@@ -188,6 +188,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)Library\MintEngine\$(Platform)\$(Configura
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor\Actor.h" />
+    <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\Color.h" />
     <ClInclude Include="Core\Common.h" />
     <ClInclude Include="Core\Logger.h" />

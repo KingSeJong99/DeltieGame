@@ -4,6 +4,9 @@
 #include <vector>
 
 #include "MintEngine/Level/Level.h"
+#include "Util/GachaModule.h"
+#include "Util/GameDataManager.h"
+#include "Util/HeroFactory.h"
 
 namespace mint {
 namespace ui {
@@ -15,9 +18,20 @@ namespace guild {
 class Hero;
 
 /**
-* @class GuildLevel
+ * @enum GuildState
+ * @brief GuildLevel의 화면을 전환한다.
+ */
+enum class GuildState {
+  kManagement,  ///< 대시보드
+  kGacha        ///< 가차
+
+};
+
+/**
+ * @class GuildLevel
  * @brief 용사를 관리하고 파티를 선발하는 메인 로비 레벨 클래스.
- * @nore 플레이어는 이 레벨에서 가용 용사 목록을 확인하고, 파티를 구성할 수 있다.
+ * @note 플레이어는 이 레벨에서 가용 용사 목록을 확인하고, 파티를 구성할 수
+ * 있다.
  */
 class GuildLevel : public mint::Level {
   RTTI_DECLARATIONS(GuildLevel, mint::Level)
@@ -49,16 +63,33 @@ class GuildLevel : public mint::Level {
   /**
    * @brief 화면에 고정된 UI 프레임(박스 등)을 렌더링한다.
    * @param renderer 렌더링을 수행할 렌더러 객체
-   * @note 향후 전용 UI 시스템(TextLayout 등)으로 기능을 이관할 예정이다.
    */
   void DrawUI(mint::Renderer& renderer);
 
-  std::vector<Hero*> available_heroes_;  ///< 선발 가능한 용사들의 전체 목록
-  std::vector<Hero*> party_;             ///< 현재 선발된 파티원 목록
-  const int kMaxPartySize = 3;           ///< 파티에 편성 가능한 최대 용사 수
-  int selected_index_ = 0;               ///< UI에서 현재 선택 중인 용사 인덱스
+  /**
+   * @brief 구역별 렌더링 함수
+   */
+  void DrawHeroList(mint::Renderer& renderer, int x, int y, int w, int h);
+  void DrawHeroDetail(mint::Renderer& renderer, int x, int y, int w, int h);
+  void DrawPartyStatus(mint::Renderer& renderer, int x, int y, int w, int h);
 
-  mint::ui::TextLayout* ui_layout_ = nullptr;  ///< UI 텍스트 배치를 관리하는 레이아웃 매니저
+  void DrawGachaUI(mint::Renderer& renderer);
+
+  // 데이터 멤버
+  GachaModule* gacha_module_ = nullptr;  ///< 가챠 시스템 객체
+  GuildState current_state_ = GuildState::kManagement;
+  GameDataManager& data_ = GameDataManager::Get();
+
+  const int kMaxPartySize = 3;  ///< 파티에 편성 가능한 최대 용사 수
+  int selected_index_ = 0;      ///< UI에서 현재 선택 중인 용사 인덱스
+
+  mint::ui::TextLayout* ui_layout_ =
+      nullptr;  ///< UI 텍스트 배치를 관리하는 레이아웃 매니저
+
+  std::vector<Hero*> last_pull_results_;  ///< 방금 뽑은 결과들 (연출용)
+  float gacha_timer_ = 0.0f;              ///< 연출용 타이머
+  int reveal_count_ = 0;                  ///< 현재까지 공개된 카드 수
+  bool is_animating_ = false;             ///< 연출 중인지 여부
 };
 
 }  // namespace guild

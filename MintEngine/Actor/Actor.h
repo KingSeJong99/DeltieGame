@@ -45,6 +45,10 @@ class MINT_API Actor : public RTTI {
   inline void set_name(const std::wstring& name) { name_ = name; }
   inline const std::wstring& name() const { return name_; }
 
+  // 이미지(문자열) 설정 및 반환
+  inline void set_image(const std::wstring& image) { image_ = image; }
+  inline const std::wstring& image() const { return image_; }
+
   // 위치 설정 및 반환
   void set_position(const Vector2& new_position);
   inline Vector2 position() const { return position_; }

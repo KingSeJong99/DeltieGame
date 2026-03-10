@@ -30,6 +30,12 @@
     <ClCompile Include="Actor\Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Util\HeroFactory.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor\CombatUnit.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor\Hero.h">
@@ -45,6 +51,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Common\GameTypes.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\HeroFactory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GachaModule.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor\CombatUnit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GameDataManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

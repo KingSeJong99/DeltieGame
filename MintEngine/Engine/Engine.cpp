@@ -154,7 +154,7 @@ void Engine::LoadSetting() {
 
   if (!file) {
     MINT_LOG_WARN(
-        L"[Engine] 설정 파일(Config/Setting.txt)을 찾지 못했습니다. 기본값을 "
+        L"설정 파일(Config/Setting.txt)을 찾지 못했습니다. 기본값을 "
         L"사용합니다.");
     // 기본 설정값 사용
     setting_.framerate = 60.0f;

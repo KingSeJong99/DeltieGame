@@ -3,8 +3,10 @@
 
 #include <vector>
 
+#include "MintEngine/Core/Camera.h"
 #include "MintEngine/Core/TurnManager.h"
 #include "MintEngine/Level/Level.h"
+#include "MintEngine/Math/IntVector2.h"
 
 namespace mint {
 class GridMap;
@@ -15,21 +17,26 @@ class TextLayout;
 
 namespace guild {
 
+class CombatUnit;
 class Hero;
 class Enemy;
 
 /**
- * @class BattleStatus 
- * @brief 전투 상태를 나타내는 열거형.
+ * @enum BattleStatus
+ * @brief 전투의 현재 진행 상태를 나타내는 열거형.
  */
-enum class BattleStatus {kInProgress, kVictory, kDefeat};
+enum class BattleStatus {
+  kInProgress,  ///< 전투 진행 중
+  kVictory,     ///< 아군 승리
+  kDefeat       ///< 아군 패배
+};
 
 /**
  * @class BattleLevel
- * @brief 플레이어의 파티와 상대 파티 간의 턴제 전투를 관리하는 전장 레벨
+ * @brief 플레이어의 용사 파티와 적군 간의 턴제 전투를 관리하는 전장 레벨
  * 클래스.
- * @note 턴 매니저를 통해 전투 순서를 제어하고, 그리드 맵 위에서 액터들의
- * 상호작용을 처리한다.
+ * @details 맵 로드, 유닛 배치, 턴 순서 제어 및 전장 렌더링(Global/Focus 모드)을
+ * 담당한다.
  */
 class BattleLevel : public mint::Level {
   RTTI_DECLARATIONS(BattleLevel, mint::Level)
@@ -37,53 +44,101 @@ class BattleLevel : public mint::Level {
  public:
   /**
    * @brief BattleLevel 생성자.
-   * @param party GuildLevel에서 선발된 용사 파티 목록.
-   * @note 전달받은 용사 포인터의 소유권 처리에 주의해야한다.
+   * @param party GuildLevel에서 선발된 용사 객체들의 목록.
    */
   explicit BattleLevel(const std::vector<Hero*>& party);
+
+  /** @brief BattleLevel 소멸자. 할당된 메모리(UI, Map, TurnManager)를 정리한다.
+   */
   virtual ~BattleLevel();
 
-  /**
-   * @brief 전장을 초기화하고 용사와 적군을 그리드 맵에 배치한다.
-   */
+  /** @brief 전장을 초기화한다. 맵을 로드하고 아군/적군을 배치한다. */
   void BeginPlay() override;
 
-  /**
-   * @brief 전투 타이머 및 턴 상태를 매 프레임 업데이트한다.
-   * @param delta_time 프레임 간 경과 시간(초).
-   */
+  /** @brief 매 프레임 전투 로직을 업데이트한다. (턴 전환, 생존 확인 등) */
   void Tick(float delta_time) override;
 
-  /**
-   * @brief 전장 맵, 액터, 그리고 전투 UI를 렌더링한다.
-   * @param render 렌더링을 수행할 렌더러 객체.
-   * @param width 화면 가로 해상도.
-   * @param height 화면 세로 해상도.
-   */
+  /** @brief 전장과 UI를 화면에 렌더링한다. */
   void Draw(mint::Renderer& renderer, int width, int height) override;
 
+  // --- [좌표 변환 도우미 함수] ---
+
+  /** @brief Global 모드용 X 좌표 변환 (그리드 -> 스크린) */
+  inline float GetGlobalX(int x) { return 6.0f + x; }
+  /** @brief Global 모드용 Y 좌표 변환 (그리드 -> 스크린) */
+  inline float GetGlobalY(int y) { return 6.0f + y; }
+  /** @brief Focus 모드용 X 좌표 변환 (카메라 오프셋 적용 및 6배 확대) */
+  inline float GetFocusX(int x, int cam_x) { return 6.0f + (x - cam_x) * 6; }
+  /** @brief Focus 모드용 Y 좌표 변환 (카메라 오프셋 적용 및 3배 확대) */
+  inline float GetFocusY(int y, int cam_y) { return 6.0f + (y - cam_y) * 3; }
+
+  /** @brief 전장에 존재하는 모든 살아있는 유닛 목록을 반환한다. */
+  std::vector<CombatUnit*> GetAllUnits();
+  /** @brief 특정 그리드 좌표에 유닛이 존재하는지 확인한다. */
+  bool IsTileOccupied(int x, int y, CombatUnit* exclude = nullptr);
+
+  /** @brief 현재 턴 매니저를 반환한다. */
+  mint::TurnManager* turn_manager() const { return turn_manager_; }
+
+  /** @brief 전투 로그를 추가한다. */
+  void AddCombatLog(const std::wstring& log);
+
  private:
+  // --- [내부 렌더링 세부 구현] ---
+
+  /** @brief 화면 중앙에 전투 로그를 출력한다. */
+  void DrawCombatLogs(mint::Renderer& renderer, int start_x, int start_y, int width);
+
   /**
-   * @brief 현재 전투 상태(체력바, 턴 정보 등)를 화면에 렌더링한다.
-   * @param renderer 렌더링을 수행할 렌더러 객체.
-   * @note 킬스코어, 데미지, 체력바 등.
+   * @brief 통합 전투 UI를 렌더링한다.
+   * @param current_grid_pos 현재 턴인 유닛의 실시간 그리드 좌표 (시각화용 중요
+   * 데이터!)
    */
-  void DrawBattleUI(mint::Renderer& renderer);
+  void DrawBattleUI(mint::Renderer& renderer, int cam_x, int cam_y,
+                    const mint::IntVector2& current_grid_pos);
 
-  std::vector<Hero*> party_;     ///< 선발된 용사 파티원들
-  std::vector<Enemy*> enemies_;  ///< 상대해야 할 적의 리스트
+  /** @brief 아군 및 적군의 상태 패널(이름, HP바, MP 등)을 그린다. */
+  void DrawStatusPanels(mint::Renderer& renderer, int start_x, int start_y,
+                        int right_edge);
 
-  mint::GridMap* map_ = nullptr;  ///< 전장 격자 맵
-  mint::ui::TextLayout* ui_layout_ =
-      nullptr;  ///< 전투 UI 텍스트 배치를 관리하는 매니저
-  mint::TurnManager* turn_manager_ =
-      nullptr;  ///< 전투의 턴 순서 및 진행을 관리하는 시스템
+  /** @brief 전장 전체를 한눈에 보여주는 Global 맵을 그린다. (이동 범위/경로
+   * 포함) */
+  void DrawGlobalMap(mint::Renderer& renderer, int x, int y, int width,
+                     const mint::IntVector2& current_grid_pos);
+
+  /** @brief 특정 유닛을 확대한 Focus 맵을 픽셀 스타일로 그린다. (이동 범위/경로
+   * 포함) */
+  void DrawFocusMap(mint::Renderer& renderer, int x, int y, int cam_x,
+                    int cam_y, const mint::IntVector2& current_grid_pos);
+
+  /** @brief 전투 종료 시 승리/패배 결과 박스를 맵 중앙에 띄운다. */
+  void DrawBattleResult(mint::Renderer& renderer, int map_x, int map_y,
+                        int map_w);
+
+  /** @brief 아군 용사의 세부 정보를 렌더링한다. */
+  void RenderUnitInfo(mint::Renderer& renderer, Hero* unit, float x, float y);
+
+  /** @brief 적군 유닛의 세부 정보를 렌더링한다. */
+  void RenderUnitInfo(mint::Renderer& renderer, Enemy* unit, float x, float y);
+
+  // --- [데이터 멤버] ---
+
+  std::vector<Hero*> party_;     ///< 아군 용사 파티
+  std::vector<Enemy*> enemies_;  ///< 적군 리스트
+  std::vector<std::wstring> combat_logs_; ///< 전투 로그 저장소
+
+  mint::GridMap* map_ = nullptr;               ///< 전장 격자 데이터
+  mint::ui::TextLayout* ui_layout_ = nullptr;  ///< 텍스트 UI 배치 매니저
+  mint::TurnManager* turn_manager_ = nullptr;  ///< 턴 제어 시스템
 
   BattleStatus status_ = BattleStatus::kInProgress;  ///< 현재 전투 상태
-  float result_timer_ = 0.0f;  ///< 전투 종료 후 대기 시간을 위한 타이머
+  int round_count_ = 0;                              ///< 현재 라운드 수
+  float result_timer_ = 0.0f;                        ///< 결과 출력 대기 타이머
+  float battle_timer_ = 0.0f;                        ///< 전체 전투 시간 기록용
 
-  float battle_timer_ =
-      0.0f;  ///< 전투 진행 시간 및 턴 전환 대기 처리를 위한 타이머
+  mint::ViewMode view_mode_ =
+      mint::ViewMode::kGlobal;           ///< 현재 뷰 모드 (Global/Focus)
+  mint::Actor* focus_target_ = nullptr;  ///< Focus 모드에서 추적할 대상
 };
 
 }  // namespace guild
